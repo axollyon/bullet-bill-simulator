@@ -1,6 +1,6 @@
 void scroll_bob_dl_Cube_mesh_layer_1_vtx_0() {
 	int i = 0;
-	int count = 14;
+	int count = 60;
 	int width = 64 * 0x20;
 	int height = 64 * 0x20;
 
@@ -8,7 +8,7 @@ void scroll_bob_dl_Cube_mesh_layer_1_vtx_0() {
 	int deltaY;
 	Vtx *vertices = segmented_to_virtual(bob_dl_Cube_mesh_layer_1_vtx_0);
 
-	deltaY = (int)(-4.0 * 0x20) % height;
+	deltaY = (int)(-8.0 * 0x20) % height;
 
 	if (absi(currentY) > height) {
 		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);

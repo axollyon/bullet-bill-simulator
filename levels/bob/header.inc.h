@@ -6,7 +6,7 @@ extern Lights1 bob_dl_SMB1_Ground_layer1_lights;
 extern u8 bob_dl_smb1ground_color_rgba16[];
 extern u8 bob_dl_smb1ground_value_i4[];
 extern Vtx bob_dl_Cube_mesh_layer_1_vtx_cull[8];
-extern Vtx bob_dl_Cube_mesh_layer_1_vtx_0[14];
+extern Vtx bob_dl_Cube_mesh_layer_1_vtx_0[60];
 extern Gfx bob_dl_Cube_mesh_layer_1_tri_0[];
 extern Gfx mat_bob_dl_SMB1_Ground_layer1[];
 extern Gfx mat_revert_bob_dl_SMB1_Ground_layer1[];

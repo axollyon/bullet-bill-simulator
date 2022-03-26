@@ -563,42 +563,42 @@ void render_hud(void) {
             render_hud_cannon_reticle();
         }
 
-#ifndef DISABLE_LIVES
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
-            render_hud_mario_lives();
-        }
-#endif
+// #ifndef DISABLE_LIVES
+//         if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
+//             render_hud_mario_lives();
+//         }
+// #endif
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
-            render_hud_coins();
-        }
+        // if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
+        //     render_hud_coins();
+        // }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_STAR_COUNT) {
-            render_hud_stars();
-        }
+        // if (hudDisplayFlags & HUD_DISPLAY_FLAG_STAR_COUNT) {
+        //     render_hud_stars();
+        // }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_KEYS) {
-            render_hud_keys();
-        }
+        // if (hudDisplayFlags & HUD_DISPLAY_FLAG_KEYS) {
+        //     render_hud_keys();
+        // }
 
-#ifdef BREATH_METER
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_BREATH_METER) render_hud_breath_meter();
-#endif
+// #ifdef BREATH_METER
+//         if (hudDisplayFlags & HUD_DISPLAY_FLAG_BREATH_METER) render_hud_breath_meter();
+// #endif
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_CAMERA_AND_POWER) {
-            render_hud_power_meter();
-#ifdef PUPPYCAM
-            if (!gPuppyCam.enabled) {
-#endif
-            render_hud_camera_status();
-#ifdef PUPPYCAM
-            }
-#endif
-        }
+//         if (hudDisplayFlags & HUD_DISPLAY_FLAG_CAMERA_AND_POWER) {
+//             render_hud_power_meter();
+// #ifdef PUPPYCAM
+//             if (!gPuppyCam.enabled) {
+// #endif
+//             render_hud_camera_status();
+// #ifdef PUPPYCAM
+//             }
+// #endif
+//         }
 
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
-            render_hud_timer();
-        }
+        // if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
+        //     render_hud_timer();
+        // }
 
         if (gSurfacePoolError & NOT_ENOUGH_ROOM_FOR_SURFACES) print_text(10, 40, "SURFACE POOL FULL");
         if (gSurfacePoolError & NOT_ENOUGH_ROOM_FOR_NODES) print_text(10, 60, "SURFACE NODE POOL FULL");

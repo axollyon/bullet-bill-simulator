@@ -480,7 +480,24 @@ void puppycam_reset_values(void) {
 
 // Set up values. Runs on level load.
 void puppycam_init(void) {
-    if (gMarioState->marioObj) {
+    uintptr_t *behaviorAddr = segmented_to_virtual(bhvBulletBill);
+    struct ObjectNode *listHead = &gObjectLists[get_object_list_from_behavior(behaviorAddr)];
+    struct Object *obj = (struct Object *) listHead->next;
+
+    gPuppyCam.targetObj = NULL;
+
+    while (obj != (struct Object *) listHead) {
+        if (obj->behavior == behaviorAddr
+            && obj != o
+        ) {
+            gPuppyCam.targetObj = obj;
+            break;
+        }
+
+        obj = (struct Object *) obj->header.next;
+    }
+
+    if (gMarioState->marioObj && gPuppyCam.targetObj == NULL) {
         gPuppyCam.targetObj = gMarioState->marioObj;
     }
     gPuppyCam.targetObj2 = NULL;
@@ -519,13 +536,7 @@ void puppycam_init(void) {
 void puppycam_input_pitch(void) {
     if (gPuppyCam.flags & PUPPYCAM_BEHAVIOUR_PITCH_ROTATION) {
         // Handles vertical inputs.
-        if (gPlayer1Controller->buttonDown & U_CBUTTONS || gPuppyCam.stick2[1] != 0) {
-            gPuppyCam.pitchAcceleration -= 50 * (gPuppyCam.options.sensitivityY / 100.f);
-        } else if (gPlayer1Controller->buttonDown & D_CBUTTONS || gPuppyCam.stick2[1] != 0) {
-            gPuppyCam.pitchAcceleration += 50 * (gPuppyCam.options.sensitivityY / 100.f);
-        } else {
-            gPuppyCam.pitchAcceleration = 0;
-        }
+        gPuppyCam.pitchAcceleration = 0;
         gPuppyCam.pitchAcceleration = CLAMP(gPuppyCam.pitchAcceleration, -100, 100);
 
         // When Mario's moving, his pitch is clamped pretty aggressively, so this exists so you can shift your view up and down momentarily at an actually usable range, rather than the otherwise baby range.
@@ -566,51 +577,12 @@ void puppycam_input_centre(void) {
 
 // The default control scheme. Hold the button down to turn the camera, and double tap to turn quickly.
 static void puppycam_input_hold_preset1(f32 ivX) {
-    if (!gPuppyCam.options.analogue && gPlayer1Controller->buttonPressed & L_CBUTTONS && gPuppyCam.framesSinceC[0] <= 5) {
-        gPuppyCam.yawTarget -= 0x4000 * ivX;
-        play_sound(SOUND_MENU_CAMERA_ZOOM_IN, gGlobalSoundSource);
-    } else if (!gPuppyCam.options.analogue && gPlayer1Controller->buttonPressed & R_CBUTTONS && gPuppyCam.framesSinceC[1] <= 5) {
-        gPuppyCam.yawTarget += 0x4000 * ivX;
-        play_sound(SOUND_MENU_CAMERA_ZOOM_IN, gGlobalSoundSource);
-    }
-
-    if ((gPlayer1Controller->buttonDown & L_CBUTTONS && !gPuppyCam.options.analogue) || gPuppyCam.stick2[0] != 0) {
-        gPuppyCam.yawAcceleration -= 75 * (gPuppyCam.options.sensitivityX / 100.f);
-        gPuppyCam.framesSinceC[0] = 0;
-    } else if ((gPlayer1Controller->buttonDown & R_CBUTTONS && !gPuppyCam.options.analogue) || gPuppyCam.stick2[0] != 0) {
-        gPuppyCam.yawAcceleration += 75*(gPuppyCam.options.sensitivityX / 100.f);
-        gPuppyCam.framesSinceC[1] = 0;
-    } else {
-        gPuppyCam.yawAcceleration = 0;
-    }
+    gPuppyCam.yawAcceleration = 0;
 }
 
 // An alternative control scheme, hold the button down to turn the camera, or press it once to turn it quickly.
 static void puppycam_input_hold_preset2(f32 ivX) {
-    // These set the initial button press.
-    if (gPlayer1Controller->buttonPressed & L_CBUTTONS) gPuppyCam.framesSinceC[0] = 0;
-    if (gPlayer1Controller->buttonPressed & R_CBUTTONS) gPuppyCam.framesSinceC[1] = 0;
-    // These handle when you release the button
-    if ((!(gPlayer1Controller->buttonDown & L_CBUTTONS)) && gPuppyCam.framesSinceC[0] <= 5) {
-        gPuppyCam.yawTarget -= 0x3000 * ivX;
-        play_sound(SOUND_MENU_CAMERA_ZOOM_IN, gGlobalSoundSource);
-        gPuppyCam.framesSinceC[0] = 6;
-    }
-
-    if ((!(gPlayer1Controller->buttonDown & R_CBUTTONS)) && gPuppyCam.framesSinceC[1] <= 5) {
-        gPuppyCam.yawTarget += 0x3000 * ivX;
-        play_sound(SOUND_MENU_CAMERA_ZOOM_IN, gGlobalSoundSource);
-        gPuppyCam.framesSinceC[1] = 6;
-    }
-
-    // Handles continuous movement as normal, as long as the button's held.
-    if (gPlayer1Controller->buttonDown & L_CBUTTONS) {
-        gPuppyCam.yawAcceleration -= 75 * (gPuppyCam.options.sensitivityX / 100.f);
-    } else if (gPlayer1Controller->buttonDown & R_CBUTTONS) {
-        gPuppyCam.yawAcceleration += 75 * (gPuppyCam.options.sensitivityX / 100.f);
-    } else {
-        gPuppyCam.yawAcceleration = 0;
-    }
+    gPuppyCam.yawAcceleration = 0;
 }
 
 // Another alternative control scheme. This one aims to mimic the parallel camera scheme down to the last bit from the original game.
@@ -638,64 +610,8 @@ static void puppycam_input_hold_preset3(void) {
             gPuppyCam.pitchAcceleration = approach_f32_asymptotic(gPuppyCam.pitchAcceleration, 0, DECELERATION);
         }
     } else {
-        if ((gPlayer1Controller->buttonPressed & L_TRIG) && (gPuppyCam.yawTarget % 0x2000)) {
-            gPuppyCam.yawTarget += 0x2000 - gPuppyCam.yawTarget % 0x2000;
-        }
-
         if (gPuppyCam.mode3Flags & PUPPYCAM_MODE3_ZOOMED_MED) gPuppyCam.pitchTarget = approach_s32(gPuppyCam.pitchTarget, 0x3800, 0x200, 0x200);
         if (gPuppyCam.mode3Flags & PUPPYCAM_MODE3_ZOOMED_OUT) gPuppyCam.pitchTarget = approach_s32(gPuppyCam.pitchTarget, 0x3000, 0x200, 0x200);
-
-        if ((gPlayer1Controller->buttonPressed & L_CBUTTONS && !gPuppyCam.options.analogue) || (gPuppyCam.stick2[0] > DEADZONE && !gPuppyCam.stickN[0])) {
-            gPuppyCam.stickN[0]  = 1;
-            gPuppyCam.yawTarget -= 0x2000;
-            play_sound(SOUND_MENU_CAMERA_TURN,gGlobalSoundSource);
-        }
-        if ((gPlayer1Controller->buttonPressed & R_CBUTTONS && !gPuppyCam.options.analogue) || (gPuppyCam.stick2[0] < -DEADZONE && !gPuppyCam.stickN[0])) {
-            gPuppyCam.stickN[0]  = 1;
-            gPuppyCam.yawTarget += 0x2000;
-            play_sound(SOUND_MENU_CAMERA_TURN,gGlobalSoundSource);
-        }
-    }
-
-    // Handles zooming in. Works just like vanilla.
-    if ((gPlayer1Controller->buttonPressed & U_CBUTTONS && !gPuppyCam.options.analogue) || (gPuppyCam.stick2[1] > DEADZONE && !gPuppyCam.stickN[1])) {
-        if ((gPuppyCam.mode3Flags & PUPPYCAM_MODE3_ZOOMED_MED) && !(gMarioState->action & ACT_FLAG_AIR) && !(gMarioState->action & ACT_FLAG_SWIMMING)) {
-            gPuppyCam.stickN[1]   = 1;
-            gPuppyCam.mode3Flags |= PUPPYCAM_MODE3_ZOOMED_IN;
-            gPuppyCam.mode3Flags &= ~PUPPYCAM_MODE3_ZOOMED_MED;
-            gPuppyCam.zoomTarget  = 200;
-            gPuppyCam.mode3Flags |= PUPPYCAM_MODE3_ENTER_FIRST_PERSON;
-
-            play_sound(SOUND_MENU_CAMERA_ZOOM_IN, gGlobalSoundSource);
-        } else if (gPuppyCam.mode3Flags & PUPPYCAM_MODE3_ZOOMED_OUT) {
-            gPuppyCam.stickN[1]   = 1;
-            gPuppyCam.mode3Flags |= PUPPYCAM_MODE3_ZOOMED_MED;
-            gPuppyCam.mode3Flags &= ~PUPPYCAM_MODE3_ZOOMED_OUT;
-            gPuppyCam.zoomTarget  = gPuppyCam.zoomPoints[1];
-
-            play_sound(SOUND_MENU_CAMERA_ZOOM_IN, gGlobalSoundSource);
-        }
-    } else  if ((gPlayer1Controller->buttonPressed & D_CBUTTONS && !gPuppyCam.options.analogue) || (gPuppyCam.stick2[1] < -DEADZONE && !gPuppyCam.stickN[1])) { // Otherwise handle zooming out.
-        if (gPuppyCam.mode3Flags & PUPPYCAM_MODE3_ZOOMED_MED) {
-            gPuppyCam.stickN[1] = 1;
-            gPuppyCam.mode3Flags |= PUPPYCAM_MODE3_ZOOMED_OUT;
-            gPuppyCam.mode3Flags &= ~PUPPYCAM_MODE3_ZOOMED_MED;
-            gPuppyCam.zoomTarget = gPuppyCam.zoomPoints[2];
-
-            play_sound(SOUND_MENU_CAMERA_ZOOM_OUT, gGlobalSoundSource);
-        }
-    }
-    if ((gPlayer1Controller->buttonPressed & D_CBUTTONS && !gPuppyCam.options.analogue) || (gPuppyCam.stick2[1] < -DEADZONE && !gPuppyCam.stickN[1]) ||
-        gPlayer1Controller->buttonPressed & B_BUTTON || gPlayer1Controller->buttonPressed & A_BUTTON) {
-        if (gPuppyCam.mode3Flags & PUPPYCAM_MODE3_ZOOMED_IN) {
-            gPuppyCam.stickN[1]   = 1;
-            gPuppyCam.mode3Flags |= PUPPYCAM_MODE3_ZOOMED_MED;
-            gPuppyCam.mode3Flags &= ~PUPPYCAM_MODE3_ZOOMED_IN;
-            gPuppyCam.zoomTarget  = gPuppyCam.zoomPoints[1];
-            gPuppyCam.mode3Flags &= ~PUPPYCAM_MODE3_ENTER_FIRST_PERSON;
-
-            play_sound(SOUND_MENU_CAMERA_ZOOM_OUT, gGlobalSoundSource);
-        }
     }
 }
 
@@ -758,25 +674,6 @@ static void puppycam_input_press(void) {
     // In theory this shouldn't be necessary, but it's nice to cover all bases.
     if (!(gPuppyCam.flags & PUPPYCAM_BEHAVIOUR_YAW_ROTATION)) {
         return;
-    }
-    if ((gPlayer1Controller->buttonPressed & L_CBUTTONS && !gPuppyCam.options.analogue) || (gPuppyCam.stickN[0] == 0 && gPuppyCam.stick2[0] < -DEADZONE)) {
-        gPuppyCam.stickN[0] = 1;
-        if (gPuppyCam.flags & PUPPYCAM_BEHAVIOUR_INPUT_8DIR) {
-            gPuppyCam.yawTarget -= 0x2000 * ivX;
-        } else {
-            gPuppyCam.yawTarget -= 0x4000 * ivX;
-        }
-        play_sound(SOUND_MENU_CAMERA_ZOOM_IN,gGlobalSoundSource);
-    }
-
-    if ((gPlayer1Controller->buttonPressed & R_CBUTTONS && !gPuppyCam.options.analogue) || (gPuppyCam.stickN[0] == 0 && gPuppyCam.stick2[0] > DEADZONE)) {
-        gPuppyCam.stickN[0] = 1;
-        if (gPuppyCam.flags & PUPPYCAM_BEHAVIOUR_INPUT_8DIR) {
-            gPuppyCam.yawTarget += 0x2000 * ivX;
-        } else {
-            gPuppyCam.yawTarget += 0x4000 * ivX;
-        }
-        play_sound(SOUND_MENU_CAMERA_ZOOM_IN,gGlobalSoundSource);
     }
     puppycam_input_pitch();
     puppycam_input_zoom();
