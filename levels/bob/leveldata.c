@@ -7,6 +7,7 @@
 #include "special_preset_names.h"
 #include "textures.h"
 #include "dialog_ids.h"
+#include "src/game/puppycam2.h"
 
 #include "make_const_nonconst.h"
 #include "levels/bob/texture.inc.c"
@@ -25,5 +26,14 @@
 #include "levels/bob/seesaw_platform/collision.inc.c"
 #include "levels/bob/grate_door/collision.inc.c"
 #include "levels/bob/areas/1/trajectory.inc.c"
+
+struct sPuppyAngles chaseAngles =
+{
+    /* pos */ {0, PUPPY_NULL, -850},
+    /* focus */ {PUPPY_NULL, -4000, 8000},
+    /* yaw */ PUPPY_NULL,
+    /* pitch */ 0x3000,
+    /* zoom */ 1000,
+};
 
 #include "levels/bob/leveldata.inc.c"

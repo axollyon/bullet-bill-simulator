@@ -2,6 +2,7 @@
 #define BOB_HEADER_H
 
 #include "types.h"
+#include "src/game/puppycam2.h"
 
 // geo
 extern const GeoLayout bob_geo_000440[];
@@ -31,6 +32,7 @@ extern const Trajectory bob_seg7_trajectory_koopa[];
 // script
 extern const LevelScript level_bob_entry[];
 
+extern struct sPuppyAngles chaseAngles;
 
 #include "levels/bob/header.inc.h"
 

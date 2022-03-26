@@ -14,6 +14,8 @@
 #include "actors/common1.h"
 
 /* Fast64 begin persistent block [includes] */
+#include "src/game/puppycam2.h"
+#include "src/game/puppyvolumes.h"
 /* Fast64 end persistent block [includes] */
 
 #include "make_const_nonconst.h"
@@ -57,6 +59,14 @@ const LevelScript level_bob_entry[] = {
 		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_GRASS),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
+        PUPPYVOLUME
+        (
+            /* x */ 0, /* y */ 100, /* z */ 0, 
+            /* length */ 401, /* height */ 1000, /* width */ 401, /* yaw */ 0, 
+            /* functionptr */ NULL, /* anglesptr */ &chaseAngles, 
+            /* addflags */ 0, /* removeflags */ 0, /* flagpersistance */ PUPPYCAM_BEHAVIOUR_TEMPORARY, 
+            /* room */ -1, /* shape */ PUPPYVOLUME_SHAPE_BOX, /* fov */ 45
+        ),
 		/* Fast64 end persistent block [area commands] */
 	END_AREA(),
 
