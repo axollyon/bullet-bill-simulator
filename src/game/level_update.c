@@ -1142,9 +1142,11 @@ s32 update_level(void) {
             break;
         case PLAY_MODE_CHANGE_AREA:
             changeLevel = play_mode_change_area();
+            scrollInit = FALSE;
             break;
         case PLAY_MODE_CHANGE_LEVEL:
             changeLevel = play_mode_change_level();
+            scrollInit = FALSE;
             break;
         case PLAY_MODE_FRAME_ADVANCE:
             changeLevel = play_mode_frame_advance();
