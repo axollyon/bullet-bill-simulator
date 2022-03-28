@@ -90,8 +90,17 @@ ObjActionFunc sBulletBillActions[] = {
     bullet_bill_act_4,
 };
 
+static s16 sBulletBillSmokeMovementParams[] = {
+    /* forwardVel  */  -15,
+    /* velY        */ -8,
+    /* gravity     */  1,
+    /* rangeLength */  4
+};
+
 void bhv_bullet_bill_loop(void) {
     s32 goalAngle = atan2s(gPlayer1Controller->stickY, -gPlayer1Controller->stickX);
+    struct Object *smoke = spawn_object_relative(0, 0, 0, -100, o, MODEL_SMOKE, bhvWhitePuffSmoke2);
+
     goalAngle = CLAMP(goalAngle, -0x1000, 0x1000);
     if (gPlayer1Controller->stickX > 0)
         goalAngle *= -1;
@@ -100,4 +109,11 @@ void bhv_bullet_bill_loop(void) {
     o->oPosZ = -200;
     cur_obj_rotate_yaw_toward(goalAngle, 0x100);
     o->oPosX = CLAMP(o->oPosX, -400.0f, 400.0f);
+
+    smoke->oForwardVel = sBulletBillSmokeMovementParams[0];
+    smoke->oVelY = sBulletBillSmokeMovementParams[1];
+    smoke->oGravity = sBulletBillSmokeMovementParams[2];
+    smoke->oPosX += sins(o->oMoveAngleYaw) * 50.0f;
+
+    obj_translate_xyz_random(smoke, sBulletBillSmokeMovementParams[3]);
 }

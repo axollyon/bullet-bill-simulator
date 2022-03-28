@@ -54,7 +54,7 @@ const LevelScript level_bob_entry[] = {
 		WARP_NODE(0xF1, LEVEL_ENDING, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		OBJECT(MODEL_NONE, 0, 0, 0, 0, 0, 0, 0x000A0000, bhvSpinAirborneWarp),
 		MARIO_POS(0x01, 0, 0, 0, 0),
-		OBJECT(MODEL_BULLET_BILL, 0, 188, -295, 0, 0, 0, 0x00000000, bhvBulletBill),
+		OBJECT(MODEL_BULLET_BILL, 0, 200, -295, 0, 0, 0, 0x00000000, bhvBulletBill),
 		TERRAIN(bob_area_1_collision),
 		MACRO_OBJECTS(bob_area_1_macro_objs),
 		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_GRASS),

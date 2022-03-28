@@ -23,7 +23,7 @@
  * An array consisting of all the hardcoded rectangle shadows in the game.
  */
 static ShadowRectangle sShadowRectangles[2] = {
-    { 7.2f, 4.6f, TRUE }, // Spindel
+    { 6.0f, 9.0f, TRUE }, // Spindel
     { 4.0f, 3.6f, TRUE }, // Whomp
 };
 
