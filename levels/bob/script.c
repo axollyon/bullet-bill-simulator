@@ -57,7 +57,7 @@ const LevelScript level_bob_entry[] = {
 		OBJECT(MODEL_BULLET_BILL, 0, 200, -295, 0, 0, 0, 0x00000000, bhvBulletBill),
 		TERRAIN(bob_area_1_collision),
 		MACRO_OBJECTS(bob_area_1_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, SEQ_LEVEL_GRASS),
+		SET_BACKGROUND_MUSIC(0x00, SEQ_CUSTOM_NEW_SOUP),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
         PUPPYVOLUME
