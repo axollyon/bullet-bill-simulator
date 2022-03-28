@@ -2554,19 +2554,19 @@ Gfx bullet_bill_Bullet_Bill_mesh_layer_1_tri_1[] = {
 };
 
 Vtx bullet_bill_Bullet_Bill_mesh_layer_1_vtx_2[13] = {
-	{{{122, -212, -380},0, {496, 1872},{0xF4, 0x15, 0x83, 0xFF}}},
-	{{{0, 0, -331},0, {976, 1008},{0x0, 0x0, 0x81, 0xFF}}},
-	{{{211, -122, -380},0, {144, 1520},{0xEB, 0xC, 0x83, 0xFF}}},
-	{{{0, -245, -380},0, {976, 2000},{0x0, 0x19, 0x83, 0xFF}}},
-	{{{-122, -212, -380},0, {496, 1872},{0xC, 0x15, 0x83, 0xFF}}},
-	{{{-211, -122, -380},0, {144, 1520},{0x15, 0xC, 0x83, 0xFF}}},
-	{{{-244, 0, -380},0, {16, 1008},{0x19, 0x0, 0x83, 0xFF}}},
-	{{{-211, 122, -380},0, {144, 496},{0x15, 0xF4, 0x83, 0xFF}}},
-	{{{-122, 212, -380},0, {496, 144},{0xC, 0xEB, 0x83, 0xFF}}},
-	{{{0, 245, -380},0, {976, 16},{0x0, 0xE7, 0x83, 0xFF}}},
-	{{{122, 212, -380},0, {496, 144},{0xF4, 0xEB, 0x83, 0xFF}}},
-	{{{211, 122, -380},0, {144, 496},{0xEB, 0xF4, 0x83, 0xFF}}},
-	{{{244, 0, -380},0, {16, 1008},{0xE7, 0x0, 0x83, 0xFF}}},
+	{{{122, -212, -380},0, {496, 1872},{0x0, 0x0, 0x0, 0xFF}}},
+	{{{0, 0, -331},0, {976, 1008},{0x80, 0x53, 0x40, 0xFF}}},
+	{{{211, -122, -380},0, {144, 1520},{0x0, 0x0, 0x0, 0xFF}}},
+	{{{0, -245, -380},0, {976, 2000},{0x0, 0x0, 0x0, 0xFF}}},
+	{{{-122, -212, -380},0, {496, 1872},{0x0, 0x0, 0x0, 0xFF}}},
+	{{{-211, -122, -380},0, {144, 1520},{0x0, 0x0, 0x0, 0xFF}}},
+	{{{-244, 0, -380},0, {16, 1008},{0x0, 0x0, 0x0, 0xFF}}},
+	{{{-211, 122, -380},0, {144, 496},{0x0, 0x0, 0x0, 0xFF}}},
+	{{{-122, 212, -380},0, {496, 144},{0x0, 0x0, 0x0, 0xFF}}},
+	{{{0, 245, -380},0, {976, 16},{0x0, 0x0, 0x0, 0xFF}}},
+	{{{122, 212, -380},0, {496, 144},{0x0, 0x0, 0x0, 0xFF}}},
+	{{{211, 122, -380},0, {144, 496},{0x0, 0x0, 0x0, 0xFF}}},
+	{{{244, 0, -380},0, {16, 1008},{0x0, 0x0, 0x0, 0xFF}}},
 };
 
 Gfx bullet_bill_Bullet_Bill_mesh_layer_1_tri_2[] = {
@@ -2933,7 +2933,8 @@ Gfx mat_bullet_bill_Bullet_Bill_Body_Back[] = {
 
 Gfx mat_bullet_bill_Bullet_Bill_Blast[] = {
 	gsDPPipeSync(),
-	gsDPSetCombineLERP(TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT, TEXEL0, 0, SHADE, 0, 0, 0, 0, ENVIRONMENT),
+	gsDPSetCombineLERP(1, SHADE, TEXEL0, SHADE, 0, 0, 0, ENVIRONMENT, 1, SHADE, TEXEL0, SHADE, 0, 0, 0, ENVIRONMENT),
+	gsSPGeometryMode(G_LIGHTING, 0),
 	gsSPTexture(65535, 65535, 0, 0, 1),
 	gsDPSetTextureLUT(G_TT_RGBA16),
 	gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, bullet_bill_bulletbillblast_ci8_pal_rgba16),
@@ -2956,6 +2957,7 @@ Gfx mat_bullet_bill_Bullet_Bill_Blast[] = {
 
 Gfx mat_revert_bullet_bill_Bullet_Bill_Blast[] = {
 	gsDPPipeSync(),
+	gsSPGeometryMode(0, G_LIGHTING),
 	gsDPSetTextureLUT(G_TT_NONE),
 	gsSPEndDisplayList(),
 };

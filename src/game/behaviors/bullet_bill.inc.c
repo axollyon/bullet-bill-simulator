@@ -113,6 +113,7 @@ void bhv_bullet_bill_loop(void) {
     o->oForwardVel = 30.0f;
     o->oPosZ = -200;
     cur_obj_rotate_yaw_toward(goalAngle, 0x100);
+    o->oFaceAngleRoll = -o->oMoveAngleYaw;
     o->oPosX = CLAMP(o->oPosX, -400.0f, 400.0f);
 
     smoke->oForwardVel = sBulletBillSmokeMovementParams[0];
