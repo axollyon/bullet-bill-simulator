@@ -102,6 +102,7 @@ void bhv_bullet_bill_loop(void) {
     struct Object *smoke = spawn_object_relative(0, 0, 0, -100, o, MODEL_SMOKE, bhvWhitePuffSmoke2);
 
     goalAngle = CLAMP(goalAngle, -0x1000, 0x1000);
+    goalAngle *= (gPlayer1Controller->stickMag / 64.0f);
     if (gPlayer1Controller->stickX > 0)
         goalAngle *= -1;
     cur_obj_become_tangible();
