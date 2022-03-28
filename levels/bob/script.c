@@ -65,7 +65,7 @@ const LevelScript level_bob_entry[] = {
             /* x */ 0, /* y */ 100, /* z */ 0, 
             /* length */ 413, /* height */ 1000, /* width */ 413, /* yaw */ 0, 
             /* functionptr */ NULL, /* anglesptr */ &chaseAngles, 
-            /* addflags */ 0, /* removeflags */ 0, /* flagpersistance */ PUPPYCAM_BEHAVIOUR_TEMPORARY, 
+            /* addflags */ 0, /* removeflags */ PUPPYCAM_BEHAVIOUR_COLLISION, /* flagpersistance */ PUPPYCAM_BEHAVIOUR_TEMPORARY, 
             /* room */ -1, /* shape */ PUPPYVOLUME_SHAPE_BOX, /* fov */ 45
         ),
 		/* Fast64 end persistent block [area commands] */

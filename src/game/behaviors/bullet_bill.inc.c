@@ -5,6 +5,10 @@ void bhv_white_puff_smoke_init(void) {
 }
 
 void bhv_bullet_bill_init(void) {
+    struct Object *block = spawn_object_relative(0, 0, 0, 0, o, MODEL_HARD_BLOCK, bhvHardBlock3);
+    block->oPosY = 100.0f;
+    block->oPosZ = 1600.0f;
+    block->oForwardVel = -20.0f;
     o->header.gfx.scale[0] = 0.25f;
     o->header.gfx.scale[1] = 0.25f;
     o->header.gfx.scale[2] = 0.25f;
@@ -117,4 +121,11 @@ void bhv_bullet_bill_loop(void) {
     smoke->oPosX += sins(o->oMoveAngleYaw) * 50.0f;
 
     obj_translate_xyz_random(smoke, sBulletBillSmokeMovementParams[3]);
+
+    cur_obj_update_floor_and_walls();
+
+    if (o->oMoveFlags & OBJ_MOVE_HIT_WALL) {
+        obj_mark_for_deletion(o);
+        spawn_mist_particles();
+    }
 }

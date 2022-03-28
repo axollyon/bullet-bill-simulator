@@ -134,6 +134,8 @@ s8 gNeverEnteredCastle;
 struct MarioState *gMarioState = &gMarioStates[0];
 s8 sWarpCheckpointActive = FALSE;
 
+u8 scrollInit = FALSE;
+
 u16 level_control_timer(s32 timerOp) {
     switch (timerOp) {
         case TIMER_CONTROL_SHOW:
@@ -1129,7 +1131,11 @@ s32 update_level(void) {
 
     switch (sCurrPlayMode) {
         case PLAY_MODE_NORMAL:
-            changeLevel = play_mode_normal(); scroll_textures();
+            changeLevel = play_mode_normal(); 
+            if (scrollInit)
+                scroll_textures();
+            else
+                scrollInit = TRUE;
             break;
         case PLAY_MODE_PAUSED:
             changeLevel = play_mode_paused();
