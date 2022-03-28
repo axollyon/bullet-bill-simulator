@@ -82,5 +82,3 @@ UNUSED static const u64 binid_18 = 18;
 
 #include "hard_block/model.inc.c"
 #include "hard_block/collision.inc.c"
-#include "hard_block_2/collision.inc.c"
-#include "hard_block_3/collision.inc.c"
