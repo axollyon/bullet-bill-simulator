@@ -1228,7 +1228,7 @@ void update_mario_button_inputs(struct MarioState *m) {
  */
 void update_mario_joystick_inputs(struct MarioState *m) {
     struct Controller *controller = m->controller;
-    f32 mag = 64.0f;
+    f32 mag = 0.0f;
 
     if (m->squishTimer == 0) {
         m->intendedMag = mag / 2.0f;

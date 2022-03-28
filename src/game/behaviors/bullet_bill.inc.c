@@ -5,12 +5,10 @@ void bhv_white_puff_smoke_init(void) {
 }
 
 void bhv_bullet_bill_init(void) {
-    gMarioState->health = 0x0100;
     o->header.gfx.scale[0] = 0.25f;
     o->header.gfx.scale[1] = 0.25f;
     o->header.gfx.scale[2] = 0.25f;
     o->oF4 = 0;
-    o->oFloatFC = 1000.0f;
     o->oBulletBillInitialMoveYaw = o->oMoveAngleYaw;
 }
 
@@ -93,33 +91,13 @@ ObjActionFunc sBulletBillActions[] = {
 };
 
 void bhv_bullet_bill_loop(void) {
-    f32 marioSpeed = 5.0f;
-    if (cur_obj_check_interacted())
-        o->oF4 = 1;
-    if (o->oF4 == 1) {
-        o->oForwardVel = -30.0f;
-        cur_obj_become_intangible();
-        o->oFaceAnglePitch += 0x1000;
-        o->oFaceAngleRoll += 0x1000;
-        o->oPosY += 20.0f;
-        marioSpeed = 20.0f;
-    }
-    else {
-        s32 goalAngle = atan2s(gPlayer1Controller->stickY, -gPlayer1Controller->stickX);
-        goalAngle = CLAMP(goalAngle, -0x1000, 0x1000);
-        if (gPlayer1Controller->stickX > 0)
-            goalAngle *= -1;
-        cur_obj_become_tangible();
-        o->oForwardVel = 30.0f;
-        o->oPosZ = -200;
-        cur_obj_rotate_yaw_toward(goalAngle, 0x100);
-        o->oPosX = CLAMP(o->oPosX, -400.0f, 400.0f);
-        // o->oPosX += gPlayer1Controller->stickX * -0.25;
-        // o->oPosZ += gPlayer1Controller->stickY * 0.25;
-    }
-    o->oFloatFC -= marioSpeed;
-    o->oFloatFC = o->oFloatFC < -4400.0f ? -4400.0f : o->oFloatFC;
-    gMarioState->pos[0] = 0.0f;
-    gMarioState->pos[1] = 100.0f;
-    gMarioState->pos[2] = o->oFloatFC;
+    s32 goalAngle = atan2s(gPlayer1Controller->stickY, -gPlayer1Controller->stickX);
+    goalAngle = CLAMP(goalAngle, -0x1000, 0x1000);
+    if (gPlayer1Controller->stickX > 0)
+        goalAngle *= -1;
+    cur_obj_become_tangible();
+    o->oForwardVel = 30.0f;
+    o->oPosZ = -200;
+    cur_obj_rotate_yaw_toward(goalAngle, 0x100);
+    o->oPosX = CLAMP(o->oPosX, -400.0f, 400.0f);
 }

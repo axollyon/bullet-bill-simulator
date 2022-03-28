@@ -1,4 +1,4 @@
-void scroll_bob_dl_Cube_mesh_layer_1_vtx_0() {
+void scroll_bob_dl_Environment_mesh_layer_1_vtx_0() {
 	int i = 0;
 	int count = 72;
 	int width = 64 * 0x20;
@@ -6,7 +6,7 @@ void scroll_bob_dl_Cube_mesh_layer_1_vtx_0() {
 
 	static int currentY = 0;
 	int deltaY;
-	Vtx *vertices = segmented_to_virtual(bob_dl_Cube_mesh_layer_1_vtx_0);
+	Vtx *vertices = segmented_to_virtual(bob_dl_Environment_mesh_layer_1_vtx_0);
 
 	deltaY = (int)(-8.0 * 0x20) % height;
 
@@ -20,7 +20,7 @@ void scroll_bob_dl_Cube_mesh_layer_1_vtx_0() {
 	currentY += deltaY;
 }
 
-void scroll_bob_dl_Cube_mesh_layer_1_vtx_1() {
+void scroll_bob_dl_Environment_mesh_layer_1_vtx_1() {
 	int i = 0;
 	int count = 42;
 	int width = 64 * 0x20;
@@ -28,7 +28,7 @@ void scroll_bob_dl_Cube_mesh_layer_1_vtx_1() {
 
 	static int currentY = 0;
 	int deltaY;
-	Vtx *vertices = segmented_to_virtual(bob_dl_Cube_mesh_layer_1_vtx_1);
+	Vtx *vertices = segmented_to_virtual(bob_dl_Environment_mesh_layer_1_vtx_1);
 
 	deltaY = (int)(-3.200000047683716 * 0x20) % height;
 
@@ -43,6 +43,6 @@ void scroll_bob_dl_Cube_mesh_layer_1_vtx_1() {
 }
 
 void scroll_bob() {
-	scroll_bob_dl_Cube_mesh_layer_1_vtx_0();
-	scroll_bob_dl_Cube_mesh_layer_1_vtx_1();
+	scroll_bob_dl_Environment_mesh_layer_1_vtx_0();
+	scroll_bob_dl_Environment_mesh_layer_1_vtx_1();
 }

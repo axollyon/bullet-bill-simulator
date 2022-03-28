@@ -1,6 +1,6 @@
 const Collision bob_area_1_collision[] = {
 	COL_INIT(),
-	COL_VERTEX_INIT(42),
+	COL_VERTEX_INIT(46),
 	COL_VERTEX(400, 100, -400),
 	COL_VERTEX(-400, 100, -400),
 	COL_VERTEX(-400, 100, 400),
@@ -43,7 +43,11 @@ const Collision bob_area_1_collision[] = {
 	COL_VERTEX(-4400, -60, 3200),
 	COL_VERTEX(-4400, -60, 6000),
 	COL_VERTEX(-4400, -60, 7600),
-	COL_TRI_INIT(SURFACE_DEFAULT, 60),
+	COL_VERTEX(400, -100, -400),
+	COL_VERTEX(-400, -100, -400),
+	COL_VERTEX(-400, -100, 400),
+	COL_VERTEX(400, -100, 400),
+	COL_TRI_INIT(SURFACE_DEFAULT, 62),
 	COL_TRI(0, 1, 2),
 	COL_TRI(0, 2, 3),
 	COL_TRI(4, 5, 6),
@@ -104,6 +108,8 @@ const Collision bob_area_1_collision[] = {
 	COL_TRI(16, 41, 34),
 	COL_TRI(15, 39, 40),
 	COL_TRI(15, 40, 16),
+	COL_TRI(42, 43, 44),
+	COL_TRI(42, 44, 45),
 	COL_TRI_STOP(),
 	COL_END()
 };

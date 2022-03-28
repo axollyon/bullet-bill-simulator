@@ -798,7 +798,7 @@ u8 bob_dl_smg2grass_ci4_pal_rgba16[] = {
 	
 };
 
-Vtx bob_dl_Cube_mesh_layer_1_vtx_cull[8] = {
+Vtx bob_dl_Environment_mesh_layer_1_vtx_cull[8] = {
 	{{{-4400, -60, 7600},0, {-16, -16},{0x0, 0x0, 0x0, 0x0}}},
 	{{{-4400, 100, 7600},0, {-16, -16},{0x0, 0x0, 0x0, 0x0}}},
 	{{{-4400, 100, -4800},0, {-16, -16},{0x0, 0x0, 0x0, 0x0}}},
@@ -809,7 +809,7 @@ Vtx bob_dl_Cube_mesh_layer_1_vtx_cull[8] = {
 	{{{4400, -60, -4800},0, {-16, -16},{0x0, 0x0, 0x0, 0x0}}},
 };
 
-Vtx bob_dl_Cube_mesh_layer_1_vtx_0[72] = {
+Vtx bob_dl_Environment_mesh_layer_1_vtx_0[72] = {
 	{{{400, 100, -400},0, {-4176, 6128},{0x0, 0x7F, 0x0, 0xFF}}},
 	{{{-400, 100, -400},0, {6064, 6128},{0x0, 0x7F, 0x0, 0xFF}}},
 	{{{-400, 100, 400},0, {6064, -4112},{0x0, 0x7F, 0x0, 0xFF}}},
@@ -884,8 +884,8 @@ Vtx bob_dl_Cube_mesh_layer_1_vtx_0[72] = {
 	{{{400, 100, 7600},0, {-4176, -28688},{0x0, 0x7F, 0x0, 0xFF}}},
 };
 
-Gfx bob_dl_Cube_mesh_layer_1_tri_0[] = {
-	gsSPVertex(bob_dl_Cube_mesh_layer_1_vtx_0 + 0, 32, 0),
+Gfx bob_dl_Environment_mesh_layer_1_tri_0[] = {
+	gsSPVertex(bob_dl_Environment_mesh_layer_1_vtx_0 + 0, 32, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSP2Triangles(4, 5, 6, 0, 4, 6, 7, 0),
 	gsSP2Triangles(8, 9, 10, 0, 8, 10, 11, 0),
@@ -894,7 +894,7 @@ Gfx bob_dl_Cube_mesh_layer_1_tri_0[] = {
 	gsSP2Triangles(20, 21, 22, 0, 20, 22, 23, 0),
 	gsSP2Triangles(24, 25, 26, 0, 24, 26, 27, 0),
 	gsSP2Triangles(28, 29, 30, 0, 28, 30, 31, 0),
-	gsSPVertex(bob_dl_Cube_mesh_layer_1_vtx_0 + 32, 32, 0),
+	gsSPVertex(bob_dl_Environment_mesh_layer_1_vtx_0 + 32, 32, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSP2Triangles(4, 5, 6, 0, 4, 6, 7, 0),
 	gsSP2Triangles(8, 9, 10, 0, 8, 10, 11, 0),
@@ -903,13 +903,13 @@ Gfx bob_dl_Cube_mesh_layer_1_tri_0[] = {
 	gsSP2Triangles(20, 21, 22, 0, 20, 22, 23, 0),
 	gsSP2Triangles(24, 25, 26, 0, 24, 26, 27, 0),
 	gsSP2Triangles(28, 29, 30, 0, 28, 30, 31, 0),
-	gsSPVertex(bob_dl_Cube_mesh_layer_1_vtx_0 + 64, 8, 0),
+	gsSPVertex(bob_dl_Environment_mesh_layer_1_vtx_0 + 64, 8, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSP2Triangles(4, 5, 6, 0, 4, 6, 7, 0),
 	gsSPEndDisplayList(),
 };
 
-Vtx bob_dl_Cube_mesh_layer_1_vtx_1[42] = {
+Vtx bob_dl_Environment_mesh_layer_1_vtx_1[42] = {
 	{{{-4400, -60, -2600},0, {19436, 18412},{0x0, 0x7F, 0x0, 0xFF}}},
 	{{{-400, -60, -2600},0, {-1040, 18412},{0x0, 0x7F, 0x0, 0xFF}}},
 	{{{-400, -60, -4800},0, {-1040, 29674},{0x0, 0x7F, 0x0, 0xFF}}},
@@ -954,8 +954,8 @@ Vtx bob_dl_Cube_mesh_layer_1_vtx_1[42] = {
 	{{{-400, -60, 7600},0, {-1040, -27657},{0x0, 0x7F, 0x0, 0xFF}}},
 };
 
-Gfx bob_dl_Cube_mesh_layer_1_tri_1[] = {
-	gsSPVertex(bob_dl_Cube_mesh_layer_1_vtx_1 + 0, 32, 0),
+Gfx bob_dl_Environment_mesh_layer_1_tri_1[] = {
+	gsSPVertex(bob_dl_Environment_mesh_layer_1_vtx_1 + 0, 32, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSP2Triangles(4, 5, 6, 0, 4, 7, 5, 0),
 	gsSP2Triangles(8, 7, 4, 0, 8, 9, 7, 0),
@@ -965,7 +965,7 @@ Gfx bob_dl_Cube_mesh_layer_1_tri_1[] = {
 	gsSP2Triangles(20, 21, 22, 0, 20, 22, 23, 0),
 	gsSP2Triangles(24, 25, 26, 0, 24, 26, 27, 0),
 	gsSP2Triangles(28, 29, 30, 0, 28, 30, 31, 0),
-	gsSPVertex(bob_dl_Cube_mesh_layer_1_vtx_1 + 32, 10, 0),
+	gsSPVertex(bob_dl_Environment_mesh_layer_1_vtx_1 + 32, 10, 0),
 	gsSP2Triangles(0, 1, 2, 0, 0, 2, 3, 0),
 	gsSP2Triangles(3, 2, 4, 0, 3, 4, 5, 0),
 	gsSP2Triangles(6, 7, 8, 0, 6, 8, 9, 0),
@@ -1046,16 +1046,16 @@ Gfx mat_revert_bob_dl_SMG2_Grass_layer1_area1[] = {
 	gsSPEndDisplayList(),
 };
 
-Gfx bob_dl_Cube_mesh_layer_1[] = {
+Gfx bob_dl_Environment_mesh_layer_1[] = {
 	gsSPClearGeometryMode(G_LIGHTING),
-	gsSPVertex(bob_dl_Cube_mesh_layer_1_vtx_cull + 0, 8, 0),
+	gsSPVertex(bob_dl_Environment_mesh_layer_1_vtx_cull + 0, 8, 0),
 	gsSPSetGeometryMode(G_LIGHTING),
 	gsSPCullDisplayList(0, 7),
 	gsSPDisplayList(mat_bob_dl_SMB1_Ground_layer1_area1),
-	gsSPDisplayList(bob_dl_Cube_mesh_layer_1_tri_0),
+	gsSPDisplayList(bob_dl_Environment_mesh_layer_1_tri_0),
 	gsSPDisplayList(mat_revert_bob_dl_SMB1_Ground_layer1_area1),
 	gsSPDisplayList(mat_bob_dl_SMG2_Grass_layer1_area1),
-	gsSPDisplayList(bob_dl_Cube_mesh_layer_1_tri_1),
+	gsSPDisplayList(bob_dl_Environment_mesh_layer_1_tri_1),
 	gsSPDisplayList(mat_revert_bob_dl_SMG2_Grass_layer1_area1),
 	gsSPEndDisplayList(),
 };
