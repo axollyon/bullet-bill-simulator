@@ -6092,8 +6092,10 @@ const BehaviorScript bhvHardBlock1[] = {
     OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     LOAD_COLLISION_DATA(hard_block_collision_1),
     SET_INT(oAnimState, 0),
+    SET_FLOAT(oDrawingDistance, 80000),
     BEGIN_LOOP(),
         CALL_NATIVE(cur_obj_move_xz_using_fvel_and_yaw),
+        CALL_NATIVE(bhv_hard_block_loop),
         CALL_NATIVE(load_object_collision_model),
     END_LOOP(),
 };
@@ -6103,8 +6105,10 @@ const BehaviorScript bhvHardBlock2[] = {
     OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     LOAD_COLLISION_DATA(hard_block_collision_2),
     SET_INT(oAnimState, 1),
+    SET_FLOAT(oDrawingDistance, 80000),
     BEGIN_LOOP(),
         CALL_NATIVE(cur_obj_move_xz_using_fvel_and_yaw),
+        CALL_NATIVE(bhv_hard_block_loop),
         CALL_NATIVE(load_object_collision_model),
     END_LOOP(),
 };
@@ -6114,8 +6118,10 @@ const BehaviorScript bhvHardBlock3[] = {
     OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     LOAD_COLLISION_DATA(hard_block_collision_3),
     SET_INT(oAnimState, 2),
+    SET_FLOAT(oDrawingDistance, 80000),
     BEGIN_LOOP(),
         CALL_NATIVE(cur_obj_move_xz_using_fvel_and_yaw),
+        CALL_NATIVE(bhv_hard_block_loop),
         CALL_NATIVE(load_object_collision_model),
     END_LOOP(),
 };
@@ -6125,8 +6131,10 @@ const BehaviorScript bhvHardBlock4[] = {
     OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
     LOAD_COLLISION_DATA(hard_block_collision_4),
     SET_INT(oAnimState, 3),
+    SET_FLOAT(oDrawingDistance, 80000),
     BEGIN_LOOP(),
         CALL_NATIVE(cur_obj_move_xz_using_fvel_and_yaw),
+        CALL_NATIVE(bhv_hard_block_loop),
         CALL_NATIVE(load_object_collision_model),
     END_LOOP(),
 };

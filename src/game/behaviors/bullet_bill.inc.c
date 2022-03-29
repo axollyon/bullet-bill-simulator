@@ -5,15 +5,12 @@ void bhv_white_puff_smoke_init(void) {
 }
 
 void bhv_bullet_bill_init(void) {
-    struct Object *block = spawn_object_relative(0, 0, 0, 0, o, MODEL_HARD_BLOCK, bhvHardBlock3);
-    block->oPosY = 100.0f;
-    block->oPosZ = 1600.0f;
-    block->oForwardVel = -20.0f;
     o->header.gfx.scale[0] = 0.25f;
     o->header.gfx.scale[1] = 0.25f;
     o->header.gfx.scale[2] = 0.25f;
     o->oF4 = 0;
     o->oBulletBillInitialMoveYaw = o->oMoveAngleYaw;
+    gMarioState->gameSpeed = 20.0f;
 }
 
 void bullet_bill_act_0(void) {
@@ -94,6 +91,11 @@ ObjActionFunc sBulletBillActions[] = {
     bullet_bill_act_4,
 };
 
+void spawn_obstacle(void) {
+    f32 offset = (o->oFloat100 / 2048) * 160.0f + gMarioState->gameSpeed;
+    /* struct Object *block = */spawn_object_abs_with_rot(o, 0, MODEL_HARD_BLOCK, bhvHardBlock3, 0, 1100.0f, 5280.0f + offset, 0, 0, 0);
+}
+
 static s16 sBulletBillSmokeMovementParams[] = {
     /* forwardVel  */  -15,
     /* velY        */ -8,
@@ -104,6 +106,15 @@ static s16 sBulletBillSmokeMovementParams[] = {
 void bhv_bullet_bill_loop(void) {
     s32 goalAngle = atan2s(gPlayer1Controller->stickY, -gPlayer1Controller->stickX);
     struct Object *smoke = spawn_object_relative(0, 0, 0, -100, o, MODEL_SMOKE, bhvWhitePuffSmoke2);
+
+    o->oFloatFC += gMarioState->gameSpeed * 0.4F * 32;
+    o->oFloat100 += gMarioState->gameSpeed * 0.4F * -32;
+    while (o->oFloat100 >= 32*64) o->oFloat100 -= 32*64;
+    while (o->oFloat100 < 0) o->oFloat100 += 32*64;
+    if (o->oFloatFC >= 5 * 2048.0f) {
+        spawn_obstacle();
+        o->oFloatFC = 0.0f;
+    }
 
     goalAngle = CLAMP(goalAngle, -0x1000, 0x1000);
     goalAngle *= (gPlayer1Controller->stickMag / 64.0f);

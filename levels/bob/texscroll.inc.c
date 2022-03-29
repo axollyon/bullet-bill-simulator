@@ -1,45 +1,49 @@
 void scroll_bob_dl_Environment_mesh_layer_1_vtx_0() {
-	int i = 0;
-	int count = 72;
-	int width = 64 * 0x20;
-	int height = 64 * 0x20;
-
-	static int currentY = 0;
-	int deltaY;
-	Vtx *vertices = segmented_to_virtual(bob_dl_Environment_mesh_layer_1_vtx_0);
-
-	deltaY = (int)(-8.0 * 0x20) % height;
-
-	if (absi(currentY) > height) {
-		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
-	}
-
-	for (i = 0; i < count; i++) {
-		vertices[i].n.tc[1] += deltaY;
-	}
-	currentY += deltaY;
+    static short t[72];
+    static float y;
+    Vtx *vtx = segmented_to_virtual(bob_dl_Environment_mesh_layer_1_vtx_0);
+    int dy;
+    int i;
+    static int code;
+    switch (code)
+    {
+        case 0:
+            for (i = 0; i < 72; i++) t[i] = vtx[i].n.tc[1];
+            y = 0;
+            code = 1;
+            break;
+        case 1:
+            y += gMarioState->gameSpeed*0.4F * -32;
+            while (y >= 32*64) y -= 32*64;
+            while (y < 0) y += 32*64;
+            dy = y;
+            for (i = 0; i < 72; i++) vtx[i].n.tc[1] = t[i] + dy;
+            break;
+    }
 }
 
 void scroll_bob_dl_Environment_mesh_layer_1_vtx_1() {
-	int i = 0;
-	int count = 42;
-	int width = 64 * 0x20;
-	int height = 64 * 0x20;
-
-	static int currentY = 0;
-	int deltaY;
-	Vtx *vertices = segmented_to_virtual(bob_dl_Environment_mesh_layer_1_vtx_1);
-
-	deltaY = (int)(-3.200000047683716 * 0x20) % height;
-
-	if (absi(currentY) > height) {
-		deltaY -= (int)(absi(currentY) / height) * height * signum_positive(deltaY);
-	}
-
-	for (i = 0; i < count; i++) {
-		vertices[i].n.tc[1] += deltaY;
-	}
-	currentY += deltaY;
+    static short t[72];
+    static float y;
+    Vtx *vtx = segmented_to_virtual(bob_dl_Environment_mesh_layer_1_vtx_1);
+    int dy;
+    int i;
+    static int code;
+    switch (code)
+    {
+        case 0:
+            for (i = 0; i < 42; i++) t[i] = vtx[i].n.tc[1];
+            y = 0;
+            code = 1;
+            break;
+        case 1:
+            y += gMarioState->gameSpeed*0.16F * -32;
+            while (y >= 32*64) y -= 32*64;
+            while (y < 0) y += 32*64;
+            dy = y;
+            for (i = 0; i < 42; i++) vtx[i].n.tc[1] = t[i] + dy;
+            break;
+    }
 }
 
 void scroll_bob() {

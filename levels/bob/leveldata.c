@@ -30,7 +30,7 @@
 struct sPuppyAngles chaseAngles =
 {
     /* pos */ {0, PUPPY_NULL, -850},
-    /* focus */ {PUPPY_NULL, -4000, 8000},
+    /* focus */ {PUPPY_NULL, -3000, 8000},
     /* yaw */ PUPPY_NULL,
     /* pitch */ 0x3000,
     /* zoom */ 1000,

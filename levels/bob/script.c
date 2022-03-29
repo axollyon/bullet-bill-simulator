@@ -52,9 +52,9 @@ const LevelScript level_bob_entry[] = {
 		WARP_NODE(0x0A, LEVEL_BOB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		WARP_NODE(0xF0, LEVEL_BOB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		WARP_NODE(0xF1, LEVEL_ENDING, 0x01, 0x0A, WARP_NO_CHECKPOINT),
-		OBJECT(MODEL_BULLET_BILL, 0, 200, -295, 0, 0, 0, 0x00000000, bhvBulletBill),
-		OBJECT(MODEL_NONE, 0, 0, 0, 0, 0, 0, 0x000A0000, bhvSpinAirborneWarp),
-		MARIO_POS(0x01, 0, 0, 0, 0),
+		OBJECT(MODEL_BULLET_BILL, 0, 1200, -295, 0, 0, 0, 0x00000000, bhvBulletBill),
+		OBJECT(MODEL_NONE, 0, 1000, 0, 0, 0, 0, 0x000A0000, bhvSpinAirborneWarp),
+		MARIO_POS(0x01, 0, 0, 1000, 0),
 		TERRAIN(bob_area_1_collision),
 		MACRO_OBJECTS(bob_area_1_macro_objs),
 		SET_BACKGROUND_MUSIC(0x00, SEQ_CUSTOM_NEW_SOUP),
@@ -62,7 +62,7 @@ const LevelScript level_bob_entry[] = {
 		/* Fast64 begin persistent block [area commands] */
         PUPPYVOLUME
         (
-            /* x */ 0, /* y */ 100, /* z */ 0, 
+            /* x */ 0, /* y */ 1100, /* z */ 0, 
             /* length */ 413, /* height */ 1000, /* width */ 413, /* yaw */ 0, 
             /* functionptr */ NULL, /* anglesptr */ &chaseAngles, 
             /* addflags */ 0, /* removeflags */ PUPPYCAM_BEHAVIOUR_COLLISION, /* flagpersistance */ PUPPYCAM_BEHAVIOUR_TEMPORARY, 
@@ -72,7 +72,7 @@ const LevelScript level_bob_entry[] = {
 	END_AREA(),
 
 	FREE_LEVEL_POOL(),
-	MARIO_POS(0x01, 0, 0, 0, 0),
+	MARIO_POS(0x01, 0, 0, 1000, 0),
 	CALL(0, lvl_init_or_update),
 	CALL_LOOP(1, lvl_init_or_update),
 	CLEAR_LEVEL(),

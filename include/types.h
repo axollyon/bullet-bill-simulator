@@ -494,6 +494,7 @@ struct MarioState {
            Angle ceilYaw;
            Angle wallYaw;
     // -- HackerSM64 MarioState fields end --
+             f32 gameSpeed;
 };
 
 #endif // TYPES_H
