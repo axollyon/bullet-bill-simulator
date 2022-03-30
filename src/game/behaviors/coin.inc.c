@@ -72,6 +72,10 @@ void bhv_yellow_coin_init(void) {
 void bhv_yellow_coin_loop(void) {
     bhv_coin_sparkles_init();
     o->oAnimState++;
+    o->oForwardVel = -gMarioState->gameSpeed;
+    if (o->oPosZ < -800) {
+        obj_mark_for_deletion(o);
+    }
 }
 
 void bhv_temp_coin_loop(void) {

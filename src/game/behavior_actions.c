@@ -46,6 +46,7 @@
 #include "rumble_init.h"
 #include "puppylights.h"
 #include "puppyvolumes.h"
+#include "obstacle_data.h"
 
 #include "behaviors/star_door.inc.c"
 #include "behaviors/mr_i.inc.c"

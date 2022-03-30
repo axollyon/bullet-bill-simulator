@@ -91,9 +91,73 @@ ObjActionFunc sBulletBillActions[] = {
     bullet_bill_act_4,
 };
 
-void spawn_obstacle(void) {
+s32 spawn_pattern(void) {
+    int i = 0;
     f32 offset = (o->oFloat100 / 2048) * 160.0f + gMarioState->gameSpeed;
-    /* struct Object *block = */spawn_object_abs_with_rot(o, 0, MODEL_HARD_BLOCK, bhvHardBlock3, 0, 1100.0f, 5280.0f + offset, 0, 0, 0);
+    int legal;
+    u16 patternId;
+
+    do {
+        legal = TRUE;
+        patternId = random_u16() % PATTERN_COUNT;
+        for (i = 0; patternArray[o->o104].nextBlacklist[i] != PATTERN_TERMINATOR && legal; i++) {
+            if (patternArray[o->o104].nextBlacklist[i] == patternId) {
+                legal = FALSE;
+            }
+        }
+    } while (!legal);
+
+    for (i = 0; patternArray[patternId].obstacles[i].id != OBSTACLE_TERMINATOR; i++) {
+        ModelID32 model;
+        const BehaviorScript *behavior;
+        int valid = TRUE;
+        f32 height = 0.f;
+        switch (patternArray[patternId].obstacles[i].id) {
+            case OBSTACLE_BLOCK_1:
+                model = MODEL_HARD_BLOCK;
+                behavior = bhvHardBlock1;
+                break;
+            case OBSTACLE_BLOCK_2:
+                model = MODEL_HARD_BLOCK;
+                behavior = bhvHardBlock2;
+                break;
+            case OBSTACLE_BLOCK_3:
+                model = MODEL_HARD_BLOCK;
+                behavior = bhvHardBlock3;
+                break;
+            case OBSTACLE_BLOCK_4:
+                model = MODEL_HARD_BLOCK;
+                behavior = bhvHardBlock4;
+                break;
+            case OBSTACLE_COIN:
+                model = MODEL_YELLOW_COIN;
+                behavior = bhvYellowCoin;
+                height = 50.f;
+                break;
+            // case OBSTACLE_GOOMBA:
+            //     model = MODEL_GOOMBA;
+            //     behavior = bhvGoomba;
+            //     break;
+            default:
+                valid = FALSE;
+                break;
+        }
+        if (valid) {
+            spawn_object_abs_with_rot(
+                o, 
+                0, 
+                model, 
+                behavior, 
+                patternArray[patternId].obstacles[i].pos[0], 
+                1100.0f + height + patternArray[patternId].obstacles[i].pos[1],
+                5280.0f + offset + patternArray[patternId].obstacles[i].pos[2],
+                0,
+                0,
+                0
+            );
+        }
+    }
+    return patternId;
 }
 
 static s16 sBulletBillSmokeMovementParams[] = {
@@ -111,8 +175,9 @@ void bhv_bullet_bill_loop(void) {
     o->oFloat100 += gMarioState->gameSpeed * 0.4F * -32;
     while (o->oFloat100 >= 32*64) o->oFloat100 -= 32*64;
     while (o->oFloat100 < 0) o->oFloat100 += 32*64;
-    if (o->oFloatFC >= 5 * 2048.0f) {
-        spawn_obstacle();
+    if (o->oFloatFC >= o->o108 * 2048.0f) {
+        o->o104 = spawn_pattern();
+        o->o108 = patternArray[o->o104].tileLength;
         o->oFloatFC = 0.0f;
     }
 
