@@ -10,7 +10,7 @@ void bhv_bullet_bill_init(void) {
     o->header.gfx.scale[2] = 0.25f;
     o->oF4 = 0;
     o->oBulletBillInitialMoveYaw = o->oMoveAngleYaw;
-    gMarioState->gameSpeed = 60.0f;
+    gMarioState->gameSpeed = 70.0f;
     o->oFloat10C = gMarioState->gameSpeed;
 }
 
