@@ -9,12 +9,6 @@ extern const GeoLayout intro_geo_mario_head_regular[];
 extern const GeoLayout intro_geo_mario_head_dizzy[];
 extern const GeoLayout intro_geo_debug_level_select[];
 
-// leveldata
-extern const Gfx intro_seg7_dl_main_logo[];
-extern const Gfx intro_seg7_dl_copyright_trademark[];
-extern const f32 intro_seg7_table_scale_1[];
-extern const f32 intro_seg7_table_scale_2[];
-
 // script
 extern const LevelScript level_intro_splash_screen[];
 extern const LevelScript level_intro_mario_head_regular[];

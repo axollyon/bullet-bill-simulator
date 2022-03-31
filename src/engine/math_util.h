@@ -600,6 +600,7 @@ Bool32 approach_f32_bool(f32 *current, f32 target, f32 inc, f32 dec);
 s32 approach_f32_signed(f32 *current, f32 target, f32 inc);
 s32 approach_f32_asymptotic_bool(f32 *current, f32 target, f32 multiplier);
 f32 approach_f32_asymptotic(f32 current, f32 target, f32 multiplier);
+void elastic_approach(f32 *cur, f32 *curVel, f32 goal, f32 speedDown, f32 speedUp);
 s32 approach_s16_asymptotic_bool(s16 *current, s16 target, s16 divisor);
 s32 approach_s16_asymptotic(s16 current, s16 target, s16 divisor);
 s32 abs_angle_diff(s16 a0, s16 a1);

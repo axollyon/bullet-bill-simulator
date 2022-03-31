@@ -90,6 +90,9 @@ OUTPUT_ARCH (mips)
    _##name##_mio0SegmentRomStart = _##name##_yay0SegmentRomStart; \
    _##name##_mio0SegmentRomEnd = _##name##_yay0SegmentRomEnd;
 
+segment_to_virtual = segmented_to_virtual;
+video_gfx = gDisplayListHead;
+
 SECTIONS
 {
    __romPos = 0;
@@ -253,6 +256,7 @@ SECTIONS
    BEGIN_SEG(engine, .)
    {
       BUILD_DIR/src/game*.o(.text*);
+      BUILD_DIR/src/sprite*.o(.text*);
       BUILD_DIR/src/game/behavior_actions.o(.text*);
       BUILD_DIR/src/game/obj_behaviors_2.o(.text*);
       BUILD_DIR/src/game/obj_behaviors.o(.text*);
@@ -266,14 +270,17 @@ SECTIONS
       _engineSegmentTextEnd = .;
       /* data */
       BUILD_DIR/src/game*.o(.data*);
+      BUILD_DIR/src/sprite*.o(.data*);
       BUILD_DIR/src/engine*.o(.data*);
       BUILD_DIR/src/usb*.o(.data*);
       /* sdata */
       BUILD_DIR/src/game*.o(.sdata*);
+      BUILD_DIR/src/sprite*.o(.sdata*);
       BUILD_DIR/src/engine*.o(.sdata*);
       BUILD_DIR/src/usb*.o(.data*);
       /* rodata */
       BUILD_DIR/src/game*.o(.rodata*);
+      BUILD_DIR/src/sprite*.o(.rodata*);
       BUILD_DIR/src/engine*.o(.rodata*);
       BUILD_DIR/src/usb*.o(.rodata*);
       . = ALIGN(0x10);
@@ -282,6 +289,7 @@ SECTIONS
    BEGIN_NOLOAD(engine)
    {
       BUILD_DIR/src/game*.o(.*bss*);
+      BUILD_DIR/src/sprite*.o(.*bss*);
       BUILD_DIR/src/engine*.o(.bss*);
       . = ALIGN(0x40);
    }

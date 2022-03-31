@@ -1056,6 +1056,12 @@ f32 approach_f32_asymptotic(f32 current, f32 target, f32 multiplier) {
     return (current + ((target - current) * multiplier));
 }
 
+void elastic_approach(f32 *cur, f32 *curVel, f32 goal, f32 speedDown, f32 speedUp) {
+    f32 diff = goal - *cur;
+    *curVel = approach_f32_asymptotic(*curVel, diff, *cur < goal ? speedUp : speedDown);
+    *cur = *cur + *curVel;
+}
+
 /**
  * Approaches an s16 value in the same fashion as approach_f32_asymptotic_bool, returns TRUE if target
  * is reached. Note: Since this function takes integers as parameters, the last argument is the

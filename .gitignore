@@ -116,3 +116,5 @@ lib/libs2d_engine.a
 
 # .orig files
 *.orig
+
+!/sound/samples/sfx_mario/13_mario_press_start_to_play.aiff
