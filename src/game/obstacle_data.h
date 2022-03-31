@@ -98,7 +98,6 @@ struct Obstacle patternB[] = {
 u8 patternBBlacklist[] = {
     PATTERN_C,
     PATTERN_D,
-    PATTERN_F,
     PATTERN_TERMINATOR,
 };
 
@@ -121,7 +120,6 @@ struct Obstacle patternC[] = {
 u8 patternCBlacklist[] = {
     PATTERN_B,
     PATTERN_D,
-    PATTERN_F,
     PATTERN_TERMINATOR,
 };
 
@@ -134,10 +132,9 @@ struct Obstacle patternD[] = {
 u8 patternDBlacklist[] = {
     PATTERN_B,
     PATTERN_C,
-    PATTERN_D,
     PATTERN_E,
-    PATTERN_G,
     PATTERN_H,
+    PATTERN_I,
     PATTERN_TERMINATOR,
 };
 
@@ -154,31 +151,42 @@ u8 patternEBlacklist[] = {
     PATTERN_B,
     PATTERN_C,
     PATTERN_D,
+    PATTERN_F,
+    PATTERN_G,
     PATTERN_TERMINATOR,
 };
 
 struct Obstacle patternF[] = {
-    { OBSTACLE_BLOCK_1, {-160.f, 0.f, 160.f} }, // row 2
-    { OBSTACLE_COIN,    {   0.f, 0.f, 160.f} },
-    { OBSTACLE_BLOCK_1, { 160.f, 0.f, 160.f} },
-    { OBSTACLE_COIN,    {-320.f, 0.f, 320.f} }, // row 3
-    { OBSTACLE_COIN,    { 320.f, 0.f, 320.f} },
-    { OBSTACLE_BLOCK_1, {-160.f, 0.f, 480.f} }, // row 4
-    { OBSTACLE_COIN,    {   0.f, 0.f, 480.f} },
-    { OBSTACLE_BLOCK_1, { 160.f, 0.f, 480.f} },
+    { OBSTACLE_COIN,    {   0.f, 0.f, 320.f} }, // row 3
+    { OBSTACLE_COIN,    {-320.f, 0.f, 640.f} }, // row 5
+    { OBSTACLE_BLOCK_4, {  80.f, 0.f, 640.f} },
     { OBSTACLE_TERMINATOR, {0.f, 0.f,   0.f} }
 };
 u8 patternFBlacklist[] = {
+    PATTERN_A,
     PATTERN_B,
     PATTERN_C,
     PATTERN_D,
-    PATTERN_E,
     PATTERN_G,
-    PATTERN_H,
     PATTERN_TERMINATOR,
 };
 
 struct Obstacle patternG[] = {
+    { OBSTACLE_COIN,    {   0.f, 0.f, 320.f} }, // row 3
+    { OBSTACLE_COIN,    { 320.f, 0.f, 640.f} }, // row 5
+    { OBSTACLE_BLOCK_4, { -80.f, 0.f, 640.f} },
+    { OBSTACLE_TERMINATOR, {0.f, 0.f,   0.f} }
+};
+u8 patternGBlacklist[] = {
+    PATTERN_A,
+    PATTERN_B,
+    PATTERN_C,
+    PATTERN_D,
+    PATTERN_F,
+    PATTERN_TERMINATOR,
+};
+
+struct Obstacle patternH[] = {
     { OBSTACLE_COIN,    {-160.f, 0.f,   0.f} }, // row 1
     { OBSTACLE_BLOCK_1, {   0.f, 0.f,   0.f} },
     { OBSTACLE_COIN,    { 160.f, 0.f,   0.f} },
@@ -190,18 +198,18 @@ struct Obstacle patternG[] = {
     { OBSTACLE_COIN,    { 160.f, 0.f, 640.f} },
     { OBSTACLE_TERMINATOR, {0.f, 0.f,   0.f} }
 };
-u8 patternGBlacklist[] = {
+u8 patternHBlacklist[] = {
     PATTERN_D,
     PATTERN_TERMINATOR,
 };
 
-struct Obstacle patternH[] = {
+struct Obstacle patternI[] = {
     { OBSTACLE_COIN,    {-320.f, 0.f, 160.f} }, // row 2
     { OBSTACLE_BLOCK_1, {   0.f, 0.f, 160.f} },
     { OBSTACLE_COIN,    { 320.f, 0.f, 160.f} },
     { OBSTACLE_TERMINATOR, {0.f, 0.f,   0.f} }
 };
-u8 patternHBlacklist[] = {
+u8 patternIBlacklist[] = {
     PATTERN_D,
     PATTERN_TERMINATOR,
 };
@@ -209,7 +217,7 @@ u8 patternHBlacklist[] = {
 
 // Pattern Array
 
-#define PATTERN_COUNT 8
+#define PATTERN_COUNT 9
 
 struct ObstaclePattern patternArray[] = {
     {5, patternA, patternABlacklist},
@@ -219,5 +227,6 @@ struct ObstaclePattern patternArray[] = {
     {6, patternE, patternEBlacklist},
     {5, patternF, patternFBlacklist},
     {5, patternG, patternGBlacklist},
-    {3, patternH, patternHBlacklist},
+    {5, patternH, patternHBlacklist},
+    {3, patternI, patternIBlacklist},
 };

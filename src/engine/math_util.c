@@ -27,30 +27,24 @@ Vec3s gVec3sOne  = {     1,     1,     1 };
 
 static u16 gRandomSeed16;
 
+u8 random_u8(void) {
+    u8 sb;
+    u8 s_seed_a = gRandomSeed16 >> 8;
+    u8 s_seed_b = gRandomSeed16 >> 0;
+    s_seed_a = 5*s_seed_a + 1;
+    sb = s_seed_b;
+    s_seed_b <<= 1;
+    if (sb >> 7 == (sb >> 4 & 1))
+    {
+        s_seed_b++;
+    }
+    gRandomSeed16 = s_seed_a << 8 | s_seed_b;
+    return s_seed_a ^ s_seed_b;
+}
+
 // Generate a pseudorandom integer from 0 to 65535 from the random seed, and update the seed.
-u32 random_u16(void) {
-    if (gRandomSeed16 == 22026) {
-        gRandomSeed16 = 0;
-    }
-
-    u16 temp1 = (((gRandomSeed16 & 0x00FF) << 8) ^ gRandomSeed16);
-
-    gRandomSeed16 = ((temp1 & 0x00FF) << 8) + ((temp1 & 0xFF00) >> 8);
-
-    temp1 = (((temp1 & 0x00FF) << 1) ^ gRandomSeed16);
-    u16 temp2 = ((temp1 >> 1) ^ 0xFF80);
-
-    if ((temp1 & 0x1) == 0) {
-        if (temp2 == 43605) {
-            gRandomSeed16 = 0;
-        } else {
-            gRandomSeed16 = (temp2 ^ 0x1FF4);
-        }
-    } else {
-        gRandomSeed16 = (temp2 ^ 0x8180);
-    }
-
-    return gRandomSeed16;
+u16 random_u16(void) {
+    return random_u8() << 8 | random_u8();
 }
 
 // Generate a pseudorandom float in the range [0, 1).
