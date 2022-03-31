@@ -28,8 +28,7 @@ struct SaveFile {
     // Location of lost cap.
     // Note: the coordinates get set, but are never actually used, since the
     // cap can always be found in a fixed spot within the course
-    u8 capLevel;
-    u8 capArea;
+    u16 randomSeed;
 #ifdef SAVE_NUM_LIVES
     s8 numLives;
     u8 filler[5];
@@ -190,6 +189,8 @@ s32 save_file_is_cannon_unlocked(void);
 void save_file_set_cannon_unlocked(void);
 void save_file_set_cap_pos(s16 x, s16 y, s16 z);
 s32 save_file_get_cap_pos(Vec3s capPos);
+void save_file_set_random_seed(u16 seed);
+u16 save_file_get_random_seed(void);
 #ifdef SAVE_NUM_LIVES
 s32 save_file_get_num_lives(void);
 void save_file_set_num_lives(s8 numLives);

@@ -1848,6 +1848,10 @@ void init_mario(void) {
 }
 
 void init_mario_from_save_file(void) {
+    gRandomSeed16 = save_file_get_random_seed();
+    random_u16();
+    save_file_set_random_seed(gRandomSeed16);
+    save_file_do_save(0);
     gMarioState->playerID = 0;
     gMarioState->flags = MARIO_NONE;
     gMarioState->action = ACT_UNINITIALIZED;

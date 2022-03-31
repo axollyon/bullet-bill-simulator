@@ -25,7 +25,7 @@ Vec3s gVec3sZero = {     0,     0,     0 };
 Vec3i gVec3iZero = {     0,     0,     0 };
 Vec3s gVec3sOne  = {     1,     1,     1 };
 
-static u16 gRandomSeed16;
+u16 gRandomSeed16;
 
 u8 random_u8(void) {
     u8 sb;

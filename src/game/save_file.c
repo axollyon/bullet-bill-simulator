@@ -650,8 +650,6 @@ void save_file_set_cannon_unlocked(void) {
 void save_file_set_cap_pos(s16 x, s16 y, s16 z) {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
 
-    saveFile->capLevel = gCurrLevelNum;
-    saveFile->capArea = gCurrAreaIndex;
 #ifndef SAVE_NUM_LIVES
     vec3s_set(saveFile->capPos, x, y, z);
 #else
@@ -664,16 +662,18 @@ s32 save_file_get_cap_pos(Vec3s capPos) {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
     s32 flags = save_file_get_flags();
 
-    if (saveFile->capLevel == gCurrLevelNum && saveFile->capArea == gCurrAreaIndex
-        && (flags & SAVE_FLAG_CAP_ON_GROUND)) {
-#ifdef SAVE_NUM_LIVES
-        vec3_zero(capPos);
-#else
-        vec3s_copy(capPos, saveFile->capPos);
-#endif
-        return TRUE;
-    }
     return FALSE;
+}
+
+void save_file_set_random_seed(u16 seed) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+    saveFile->randomSeed = seed;
+    gSaveFileModified = TRUE;
+}
+
+u16 save_file_get_random_seed(void) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+    return saveFile->randomSeed;
 }
 
 #ifdef SAVE_NUM_LIVES
@@ -717,17 +717,6 @@ u32 save_file_get_sound_mode(void) {
 
 void save_file_move_cap_to_default_location(void) {
     if (save_file_get_flags() & SAVE_FLAG_CAP_ON_GROUND) {
-        switch (gSaveBuffer.files[gCurrSaveFileNum - 1][0].capLevel) {
-            case LEVEL_SSL:
-                save_file_set_flags(SAVE_FLAG_CAP_ON_KLEPTO);
-                break;
-            case LEVEL_SL:
-                save_file_set_flags(SAVE_FLAG_CAP_ON_MR_BLIZZARD);
-                break;
-            case LEVEL_TTM:
-                save_file_set_flags(SAVE_FLAG_CAP_ON_UKIKI);
-                break;
-        }
         save_file_clear_flags(SAVE_FLAG_CAP_ON_GROUND);
     }
 }
