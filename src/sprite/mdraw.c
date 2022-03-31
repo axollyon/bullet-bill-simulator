@@ -166,8 +166,8 @@ void msprite(const MSPRITE *msp, int x, int y, uint w, uint h) {
  *                                  Printing                                  *
  ******************************************************************************/
 
-extern const u8 *const texture_primary[];
-extern const u8 primary_kern[];
+extern const u8 *const texture_mariofont[];
+extern const u8 mariofont_kern[];
 
 static uint mprint_w(const u8 *kern, uint s, uint max, const char *str) {
     uint w = 0;
@@ -202,8 +202,8 @@ void mprint_start(void) {
 }
 
 void mprint(int x, int y, uint s, uint max, uint just, u8 r, u8 g, u8 b, u8 a, const char *str) {
-    const u8 *const *table = segment_to_virtual(texture_primary);
-    const u8 *kern         = segment_to_virtual(primary_kern);
+    const u8 *const *table = segment_to_virtual(texture_mariofont);
+    const u8 *kern         = segment_to_virtual(mariofont_kern);
     uint w = gConfig.widescreen ? (uint)((f32)s * 0.75f) : s;
     uint h = s;
     int st = mdraw.filter ? -16 : 0;
@@ -258,9 +258,6 @@ start:
                 break;
             default:
                 {
-                    if (c == 'j') {
-                        x -= w/8;
-                    }
                     const u8 *timg = table[c];
                     if (timg != NULL) {
                         gDPSetTextureImage(
