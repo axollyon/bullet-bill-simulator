@@ -10,7 +10,8 @@ void bhv_bullet_bill_init(void) {
     o->header.gfx.scale[2] = 0.25f;
     o->oF4 = 0;
     o->oBulletBillInitialMoveYaw = o->oMoveAngleYaw;
-    gMarioState->gameSpeed = 20.0f;
+    gMarioState->gameSpeed = 60.0f;
+    o->oFloat10C = gMarioState->gameSpeed;
 }
 
 void bullet_bill_act_0(void) {
@@ -171,6 +172,16 @@ void bhv_bullet_bill_loop(void) {
     s32 goalAngle = atan2s(gPlayer1Controller->stickY, -gPlayer1Controller->stickX);
     struct Object *smoke = spawn_object_relative(0, 0, 0, -100, o, MODEL_SMOKE, bhvWhitePuffSmoke2);
 
+    if (gMarioState->gameSpeed > 20.0f && o->oTimer >= 70) {
+        gMarioState->gameSpeed = 20.0f;
+    }
+
+    if (gMarioState->gameSpeed != o->oFloat10C) {
+        o->oFloatFC += 2 * (gMarioState->gameSpeed - o->oFloat10C) * 0.4F * 32;
+        o->oFloat100 += 2 * (gMarioState->gameSpeed - o->oFloat10C) * 0.4F * -32;
+        o->oFloat10C = gMarioState->gameSpeed;
+    }
+
     o->oFloatFC += gMarioState->gameSpeed * 0.4F * 32;
     o->oFloat100 += gMarioState->gameSpeed * 0.4F * -32;
     while (o->oFloat100 >= 32*64) o->oFloat100 -= 32*64;
@@ -204,5 +215,7 @@ void bhv_bullet_bill_loop(void) {
     if (o->oMoveFlags & OBJ_MOVE_HIT_WALL) {
         obj_mark_for_deletion(o);
         spawn_mist_particles();
+        save_file_set_random_seed(gRandomSeed16);
+        save_file_do_save(0);
     }
 }
