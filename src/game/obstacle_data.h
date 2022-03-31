@@ -98,6 +98,8 @@ struct Obstacle patternB[] = {
 u8 patternBBlacklist[] = {
     PATTERN_C,
     PATTERN_D,
+    PATTERN_F,
+    PATTERN_G,
     PATTERN_TERMINATOR,
 };
 
@@ -120,6 +122,8 @@ struct Obstacle patternC[] = {
 u8 patternCBlacklist[] = {
     PATTERN_B,
     PATTERN_D,
+    PATTERN_F,
+    PATTERN_G,
     PATTERN_TERMINATOR,
 };
 
