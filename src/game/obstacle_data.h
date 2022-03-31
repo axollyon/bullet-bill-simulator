@@ -174,6 +174,7 @@ u8 patternFBlacklist[] = {
     PATTERN_C,
     PATTERN_D,
     PATTERN_G,
+    PATTERN_H,
     PATTERN_TERMINATOR,
 };
 
@@ -189,6 +190,7 @@ u8 patternGBlacklist[] = {
     PATTERN_C,
     PATTERN_D,
     PATTERN_F,
+    PATTERN_H,
     PATTERN_TERMINATOR,
 };
 

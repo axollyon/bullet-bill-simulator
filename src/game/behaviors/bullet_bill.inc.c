@@ -172,8 +172,13 @@ void bhv_bullet_bill_loop(void) {
     s32 goalAngle = atan2s(gPlayer1Controller->stickY, -gPlayer1Controller->stickX);
     struct Object *smoke = spawn_object_relative(0, 0, 0, -100, o, MODEL_SMOKE, bhvWhitePuffSmoke2);
 
-    if (gMarioState->gameSpeed > 20.0f && o->oTimer >= 70) {
-        gMarioState->gameSpeed = 20.0f;
+    if (o->oTimer >= 70) {
+        f32 speedMod = 15.0f;
+        if (gMarioState->numCoins < 50)
+            speedMod = gMarioState->numCoins * 0.1f;
+        else if (gMarioState->numCoins < 250)
+            speedMod = 5.0f + (gMarioState->numCoins - 50) * 0.05f;
+        gMarioState->gameSpeed = 12.5f + speedMod;
     }
 
     if (gMarioState->gameSpeed != o->oFloat10C) {
