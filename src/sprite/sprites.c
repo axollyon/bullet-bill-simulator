@@ -54,3 +54,22 @@ void draw_axollyon(int x, int y, u8 alpha) { // Centered on the x axis for wides
     msprite(&sprite_axollyon, x - (w / 2), y, w, 319);
     gDPSetTexturePersp(gDisplayListHead++, G_TP_PERSP);
 }
+
+// BOB
+
+extern const u8 texture_logo[];
+MSPRITE sprite_logo = {texture_logo, G_IM_FMT_IA, G_IM_SIZ_8b, 761, 407};
+
+void draw_logo(int x, int y) { // Centered on the x axis for widescreen support - origin is at top center, not top left!
+    uint w = gConfig.widescreen ? 570 : 761;
+    gDPSetCombineLERP(
+        gDisplayListHead++,
+        0, 0, 0, TEXEL0, 0, 0, 0, TEXEL0,
+        0, 0, 0, TEXEL0, 0, 0, 0, TEXEL0
+    );
+    gDPSetTexturePersp(gDisplayListHead++, G_TP_NONE);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
+    mfilter(1);
+    msprite(&sprite_logo, x - (w / 2), y, w, 407);
+    gDPSetTexturePersp(gDisplayListHead++, G_TP_PERSP);
+}

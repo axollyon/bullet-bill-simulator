@@ -665,6 +665,7 @@ void render_hud(void) {
                     switch (menuID) {
                         case 0: {
                             curButtonMax = 1;
+                            draw_logo(640, 1);
                             if (highScore > 0) {
                                 char highScoreText[0x10];
                                 sprintf(highScoreText, "High Score: %d", highScore);

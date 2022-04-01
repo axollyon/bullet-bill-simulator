@@ -6,4 +6,4 @@
 
 #include "make_const_nonconst.h"
 
-#include "levels/intro/axollyon.c"
+#include "levels/intro/axollyon.inc.c"
