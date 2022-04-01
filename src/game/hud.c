@@ -659,9 +659,6 @@ void render_hud(void) {
             highScore = save_file_get_high_score();
             lastAction = gMarioState->gameAction;
         }
-        if (gMarioState->gameAction != 1) {
-            
-        }
         switch (gMarioState->gameAction) {
             case 0:
                 {
