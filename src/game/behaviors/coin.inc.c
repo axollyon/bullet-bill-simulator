@@ -79,7 +79,7 @@ void bhv_yellow_coin_loop(void) {
     else if (o->oForwardVel == 0.0f) {
         o->oForwardVel = -gMarioState->gameSpeed;
     }
-    if (o->oPosZ < -800) {
+    if (o->oPosZ < -800 || gMarioState->resetAll == TRUE) {
         obj_mark_for_deletion(o);
     }
 }

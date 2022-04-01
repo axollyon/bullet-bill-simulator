@@ -57,7 +57,7 @@ const LevelScript level_bob_entry[] = {
 		MARIO_POS(0x01, 0, 0, 1000, 0),
 		TERRAIN(bob_area_1_collision),
 		MACRO_OBJECTS(bob_area_1_macro_objs),
-		SET_BACKGROUND_MUSIC(0x00, SEQ_CUSTOM_NEW_SOUP),
+		STOP_MUSIC(0),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
         PUPPYVOLUME

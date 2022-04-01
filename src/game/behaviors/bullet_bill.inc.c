@@ -10,8 +10,12 @@ void bhv_bullet_bill_init(void) {
     o->header.gfx.scale[2] = 0.25f;
     o->oF4 = 0;
     o->oBulletBillInitialMoveYaw = o->oMoveAngleYaw;
-    gMarioState->gameSpeed = 70.0f;
+    gMarioState->gameSpeed = 0.0f;
     o->oFloat10C = gMarioState->gameSpeed;
+    o->oAction = 0;
+    cur_obj_set_model(MODEL_NONE);
+    gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_COIN_COUNT;
+    play_music(SEQ_PLAYER_LEVEL, SEQ_CUSTOM_MENU_SOUP, 0);
 }
 
 void bullet_bill_act_0(void) {
@@ -169,58 +173,99 @@ static s16 sBulletBillSmokeMovementParams[] = {
 };
 
 void bhv_bullet_bill_loop(void) {
-    s32 goalAngle = atan2s(gPlayer1Controller->stickY, -gPlayer1Controller->stickX);
-    struct Object *smoke = spawn_object_relative(0, 0, 0, -100, o, MODEL_SMOKE, bhvWhitePuffSmoke2);
-
-    if (o->oTimer >= 70) {
-        f32 speedMod = 15.0f;
-        if (gMarioState->numCoins < 50)
-            speedMod = gMarioState->numCoins * 0.1f;
-        else if (gMarioState->numCoins < 250)
-            speedMod = 5.0f + (gMarioState->numCoins - 50) * 0.05f;
-        gMarioState->gameSpeed = 12.5f + speedMod;
+    if (o->oAction == 0) {
+        o->oForwardVel = 0.0f;
+        o->oPosZ = -170;
+        if (gPlayer1Controller->buttonPressed & A_BUTTON) {
+            gHudDisplay.flags |= HUD_DISPLAY_FLAG_COIN_COUNT;
+            o->oPosX = 0;
+            cur_obj_set_model(MODEL_BULLET_BILL);
+            o->oAction = 1;
+            stop_background_music(SEQ_CUSTOM_MENU_SOUP);
+            play_music(SEQ_PLAYER_LEVEL, SEQ_CUSTOM_NEW_SOUP, 0);
+        }
     }
+    else if (o->oAction == 1) {
+        s32 goalAngle = atan2s(gPlayer1Controller->stickY, -gPlayer1Controller->stickX);
+        struct Object *smoke = spawn_object_relative(0, 0, 0, -100, o, MODEL_SMOKE, bhvWhitePuffSmoke2);
 
-    if (gMarioState->gameSpeed != o->oFloat10C) {
-        o->oFloatFC += 2 * (gMarioState->gameSpeed - o->oFloat10C) * 0.4F * 32;
-        o->oFloat100 += 2 * (gMarioState->gameSpeed - o->oFloat10C) * 0.4F * -32;
-        o->oFloat10C = gMarioState->gameSpeed;
+        if (gMarioState->resetAll == TRUE) {
+            o->oFloatFC -= 12.861 * 0.4F * 32;
+            o->oFloat100 -= 12.861 * 0.4F * -32;
+            gMarioState->resetAll = FALSE;
+        }
+
+        if (o->oTimer >= 70) {
+            f32 speedMod = 15.0f;
+            if (gMarioState->numCoins < 50)
+                speedMod = gMarioState->numCoins * 0.1f;
+            else if (gMarioState->numCoins < 250)
+                speedMod = 5.0f + (gMarioState->numCoins - 50) * 0.05f;
+            gMarioState->gameSpeed = 12.5f + speedMod;
+        }
+        else {
+            gMarioState->gameSpeed = 70.0f;
+        }
+
+        if (gMarioState->gameSpeed != o->oFloat10C) {
+            o->oFloatFC += 2 * (gMarioState->gameSpeed - o->oFloat10C) * 0.4F * 32;
+            o->oFloat100 += 2 * (gMarioState->gameSpeed - o->oFloat10C) * 0.4F * -32;
+            o->oFloat10C = gMarioState->gameSpeed;
+        }
+
+        o->oFloatFC += gMarioState->gameSpeed * 0.4F * 32;
+        o->oFloat100 += gMarioState->gameSpeed * 0.4F * -32;
+        while (o->oFloat100 >= 32*64) o->oFloat100 -= 32*64;
+        while (o->oFloat100 < 0) o->oFloat100 += 32*64;
+        if (o->oFloatFC >= o->o108 * 2048.0f) {
+            o->o104 = spawn_pattern();
+            o->o108 = patternArray[o->o104].tileLength;
+            o->oFloatFC = 0.0f;
+        }
+
+        goalAngle = CLAMP(goalAngle, -0x1000, 0x1000);
+        goalAngle *= (gPlayer1Controller->stickMag / 64.0f);
+        if (gPlayer1Controller->stickX > 0)
+            goalAngle *= -1;
+        cur_obj_become_tangible();
+        o->oForwardVel = 30.0f;
+        o->oPosZ = -200;
+        cur_obj_rotate_yaw_toward(goalAngle, 0x100);
+        o->oFaceAngleRoll = -o->oMoveAngleYaw;
+        o->oPosX = CLAMP(o->oPosX, -400.0f, 400.0f);
+
+        smoke->oForwardVel = sBulletBillSmokeMovementParams[0];
+        smoke->oVelY = sBulletBillSmokeMovementParams[1];
+        smoke->oGravity = sBulletBillSmokeMovementParams[2];
+        smoke->oPosX += sins(o->oMoveAngleYaw) * 50.0f;
+
+        obj_translate_xyz_random(smoke, sBulletBillSmokeMovementParams[3]);
+
+        cur_obj_update_floor_and_walls();
+
+        if (o->oMoveFlags & OBJ_MOVE_HIT_WALL) {
+            o->oAction = 2;
+            gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_COIN_COUNT;
+            gMarioState->gameSpeed = 0;
+            cur_obj_set_model(MODEL_NONE);
+            stop_background_music(SEQ_CUSTOM_NEW_SOUP);
+            play_music(SEQ_PLAYER_LEVEL, SEQ_CUSTOM_MENU_SOUP, 0);
+            spawn_mist_particles();
+            save_file_set_random_seed(gRandomSeed16);
+            save_file_do_save(0);
+        }
     }
-
-    o->oFloatFC += gMarioState->gameSpeed * 0.4F * 32;
-    o->oFloat100 += gMarioState->gameSpeed * 0.4F * -32;
-    while (o->oFloat100 >= 32*64) o->oFloat100 -= 32*64;
-    while (o->oFloat100 < 0) o->oFloat100 += 32*64;
-    if (o->oFloatFC >= o->o108 * 2048.0f) {
-        o->o104 = spawn_pattern();
-        o->o108 = patternArray[o->o104].tileLength;
-        o->oFloatFC = 0.0f;
-    }
-
-    goalAngle = CLAMP(goalAngle, -0x1000, 0x1000);
-    goalAngle *= (gPlayer1Controller->stickMag / 64.0f);
-    if (gPlayer1Controller->stickX > 0)
-        goalAngle *= -1;
-    cur_obj_become_tangible();
-    o->oForwardVel = 30.0f;
-    o->oPosZ = -200;
-    cur_obj_rotate_yaw_toward(goalAngle, 0x100);
-    o->oFaceAngleRoll = -o->oMoveAngleYaw;
-    o->oPosX = CLAMP(o->oPosX, -400.0f, 400.0f);
-
-    smoke->oForwardVel = sBulletBillSmokeMovementParams[0];
-    smoke->oVelY = sBulletBillSmokeMovementParams[1];
-    smoke->oGravity = sBulletBillSmokeMovementParams[2];
-    smoke->oPosX += sins(o->oMoveAngleYaw) * 50.0f;
-
-    obj_translate_xyz_random(smoke, sBulletBillSmokeMovementParams[3]);
-
-    cur_obj_update_floor_and_walls();
-
-    if (o->oMoveFlags & OBJ_MOVE_HIT_WALL) {
-        obj_mark_for_deletion(o);
-        spawn_mist_particles();
-        save_file_set_random_seed(gRandomSeed16);
-        save_file_do_save(0);
+    else {
+        o->oForwardVel = 0.0f;
+        o->oPosZ = -170;
+        if (gPlayer1Controller->buttonPressed & A_BUTTON) {
+            gHudDisplay.flags |= HUD_DISPLAY_FLAG_COIN_COUNT;
+            o->oPosX = 0;
+            cur_obj_set_model(MODEL_BULLET_BILL);
+            o->oAction = 1;
+            stop_background_music(SEQ_CUSTOM_MENU_SOUP);
+            play_music(SEQ_PLAYER_LEVEL, SEQ_CUSTOM_NEW_SOUP, 0);
+            gMarioState->resetAll = TRUE;
+        }
     }
 }
