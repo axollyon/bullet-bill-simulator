@@ -266,6 +266,14 @@ void bhv_bullet_bill_loop(void) {
                 gMarioState->newHigh = TRUE;
                 play_music(SEQ_PLAYER_ENV, SEQ_EVENT_HIGH_SCORE, 0);
             }
+            if (gMarioState->numCoins >= 50)
+                save_file_collect_star_or_key(0, 0);
+            if (gMarioState->numCoins >= 100)
+                save_file_collect_star_or_key(0, 1);
+            if (gMarioState->numCoins >= 250)
+                save_file_collect_star_or_key(0, 2);
+            if (gMarioState->numCoins >= 500)
+                save_file_collect_star_or_key(0, 3);
             save_file_do_save(0);
         }
     }
