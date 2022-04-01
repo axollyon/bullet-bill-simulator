@@ -202,7 +202,6 @@ void bhv_bullet_bill_loop(void) {
         if (gMarioState->resetAll == TRUE) {
             o->oFloatFC -= 12.861 * 0.4F * 32;
             o->oFloat100 -= 12.861 * 0.4F * -32;
-            gMarioState->resetAll = FALSE;
         }
 
         if (o->oTimer >= 70) {
@@ -251,32 +250,36 @@ void bhv_bullet_bill_loop(void) {
 
         obj_translate_xyz_random(smoke, sBulletBillSmokeMovementParams[3]);
 
-        cur_obj_update_floor_and_walls();
+        if (gMarioState->resetAll == FALSE) {
+            cur_obj_update_floor_and_walls();
 
-        if (o->oMoveFlags & OBJ_MOVE_HIT_WALL) {
-            gMarioState->gameAction = 2;
-            gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_COIN_COUNT;
-            gMarioState->gameSpeed = 0;
-            cur_obj_set_model(MODEL_NONE);
-            stop_background_music(SEQ_CUSTOM_NEW_SOUP);
-            play_music(SEQ_PLAYER_LEVEL, SEQ_CUSTOM_MENU_SOUP, 0);
-            spawn_mist_particles();
-            save_file_set_random_seed(gRandomSeed16);
-            if (gMarioState->numCoins > save_file_get_high_score()) {
-                save_file_set_high_score(gMarioState->numCoins);
-                gMarioState->newHigh = TRUE;
-                play_music(SEQ_PLAYER_ENV, SEQ_EVENT_HIGH_SCORE, 0);
+            if (o->oMoveFlags & OBJ_MOVE_HIT_WALL) {
+                gMarioState->gameAction = 2;
+                gHudDisplay.flags &= ~HUD_DISPLAY_FLAG_COIN_COUNT;
+                gMarioState->gameSpeed = 0;
+                cur_obj_set_model(MODEL_NONE);
+                stop_background_music(SEQ_CUSTOM_NEW_SOUP);
+                play_music(SEQ_PLAYER_LEVEL, SEQ_CUSTOM_MENU_SOUP, 0);
+                spawn_mist_particles();
+                save_file_set_random_seed(gRandomSeed16);
+                if (gMarioState->numCoins > save_file_get_high_score()) {
+                    save_file_set_high_score(gMarioState->numCoins);
+                    gMarioState->newHigh = TRUE;
+                    play_music(SEQ_PLAYER_ENV, SEQ_EVENT_HIGH_SCORE, 0);
+                }
+                if (gMarioState->numCoins >= 50)
+                    save_file_collect_star_or_key(0, 0);
+                if (gMarioState->numCoins >= 100)
+                    save_file_collect_star_or_key(0, 1);
+                if (gMarioState->numCoins >= 250)
+                    save_file_collect_star_or_key(0, 2);
+                if (gMarioState->numCoins >= 500)
+                    save_file_collect_star_or_key(0, 3);
+                save_file_do_save(0);
             }
-            if (gMarioState->numCoins >= 50)
-                save_file_collect_star_or_key(0, 0);
-            if (gMarioState->numCoins >= 100)
-                save_file_collect_star_or_key(0, 1);
-            if (gMarioState->numCoins >= 250)
-                save_file_collect_star_or_key(0, 2);
-            if (gMarioState->numCoins >= 500)
-                save_file_collect_star_or_key(0, 3);
-            save_file_do_save(0);
         }
+
+        gMarioState->resetAll = FALSE;
     }
     else {
         o->oForwardVel = 0.0f;
