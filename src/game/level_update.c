@@ -166,11 +166,6 @@ u32 pressed_pause(void) {
     u32 dialogActive = get_dialog_id() >= 0;
     u32 intangible = (gMarioState->action & ACT_FLAG_INTANGIBLE) != 0;
 
-    if (!intangible && !dialogActive && !gWarpTransition.isActive && sDelayedWarpOp == WARP_OP_NONE
-        && (gPlayer1Controller->buttonPressed & START_BUTTON)) {
-        return TRUE;
-    }
-
     return FALSE;
 }
 
@@ -899,6 +894,9 @@ void update_hud_values(void) {
                 play_sound(coinSound, gMarioState->marioObj->header.gfx.cameraToObject);
             }
         }
+        else if (gHudDisplay.coins > gMarioState->numCoins) {
+            gHudDisplay.coins = gMarioState->numCoins;
+        }
 
 #ifdef SAVE_NUM_LIVES
         if (gMarioState->numLives > MAX_NUM_LIVES) {
@@ -920,8 +918,8 @@ void update_hud_values(void) {
             gHudDisplay.coins = 999;
         }
 #else
-        if (gMarioState->numCoins > 999) {
-            gMarioState->numLives = (s8) 999; //! Wrong variable
+        if (gMarioState->numCoins > 32766) {
+            gMarioState->numCoins = 32766; //! Wrong variable
         }
 #endif
 

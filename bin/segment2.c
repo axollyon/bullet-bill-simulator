@@ -3485,6 +3485,9 @@ const s16 seg2_painting_mesh_neighbor_tris[] = {
       1, 243,
 };
 
+// Ortho Tris
+#include "sprite/rounded_box.inc.c"
+
 // mprint
 #include "sprite/mariofont.inc.c"
 #include "sprite/button.inc.c"

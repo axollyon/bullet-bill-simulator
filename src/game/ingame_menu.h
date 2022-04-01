@@ -178,4 +178,7 @@ void render_hud_cannon_reticle(void);
 void reset_red_coins_collected(void);
 s32 render_menus_and_dialogs(void);
 
+void draw_rounded_box(s32 x, s32 y, u32 w, u32 h, u32 s, u8 r, u8 g, u8 b, u8 a);
+void draw_rounded_box_ws_center(s32 x, s32 y, u32 w, u32 h, u32 s, u8 r, u8 g, u8 b, u8 a);
+
 #endif // INGAME_MENU_H

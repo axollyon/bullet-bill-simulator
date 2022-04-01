@@ -648,20 +648,12 @@ void save_file_set_cannon_unlocked(void) {
 }
 
 void save_file_set_cap_pos(s16 x, s16 y, s16 z) {
-    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
-
-#ifndef SAVE_NUM_LIVES
-    vec3s_set(saveFile->capPos, x, y, z);
-#else
     (void) x; (void) y; (void) z; // Address compiler warnings for unused variables
-#endif
     save_file_set_flags(SAVE_FLAG_CAP_ON_GROUND);
 }
 
 s32 save_file_get_cap_pos(Vec3s capPos) {
-    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
-    s32 flags = save_file_get_flags();
-
+    (void) capPos;
     return FALSE;
 }
 
@@ -674,6 +666,17 @@ void save_file_set_random_seed(u16 seed) {
 u16 save_file_get_random_seed(void) {
     struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
     return saveFile->randomSeed;
+}
+
+void save_file_set_high_score(u16 score) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+    saveFile->highScore = score;
+    gSaveFileModified = TRUE;
+}
+
+u16 save_file_get_high_score(void) {
+    struct SaveFile *saveFile = &gSaveBuffer.files[gCurrSaveFileNum - 1][0];
+    return saveFile->highScore;
 }
 
 #ifdef SAVE_NUM_LIVES

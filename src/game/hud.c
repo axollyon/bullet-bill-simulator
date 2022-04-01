@@ -17,6 +17,9 @@
 #include "engine/math_util.h"
 #include "puppycam2.h"
 #include "puppyprint.h"
+#include "src/sprite/mdraw.h"
+#include "src/sprite/sprites.h"
+#include "audio/external.h"
 
 #include "config.h"
 
@@ -49,6 +52,17 @@
 
 OSTime frameTimes[FRAMETIME_COUNT];
 u8 curFrameTimeIndex = 0;
+u8 selectedButtonID = 0;
+s16 stickTimer = 0;
+u8 curButtonMax = 0;
+u8 menuID = 0;
+s16 clickTimer = 0;
+s16 cancelTimer = 0;
+u8 clickButtonID = 0;
+u8 clickMenuID = 0;
+s8 sliderDir;
+s8 lastAction = -1;
+u16 highScore = 0;
 
 #include "PR/os_convert.h"
 
@@ -528,79 +542,268 @@ void render_hud_camera_status(void) {
 }
 
 /**
+ * Handles any button inputs on the menu
+ */
+void handle_button_input(void) {
+    // If scoring a file, pressing A just changes the coin score mode.
+    if (gPlayer3Controller->buttonPressed & (A_BUTTON | START_BUTTON)) {
+        clickTimer = 1;
+        clickMenuID = menuID;
+        clickButtonID = selectedButtonID;
+    }
+    if (gPlayer3Controller->buttonPressed & B_BUTTON) {
+        cancelTimer = 1;
+    }
+}
+
+/**
+ * Handles any directional movement (joystick, and also d-pad)
+ */
+void handle_stick_input(void) {
+    s16 dirX = gPlayer3Controller->rawStickX;
+    s16 dirY = gPlayer3Controller->rawStickY;
+
+    // Handle deadzone
+    if (dirY > -48 && dirY < 48) {
+        dirY = 0;
+    }
+    if (dirX > -48 && dirX < 48) {
+        dirX = 0;
+    }
+
+    if (dirY != 0) {
+        dirX = 0;
+    }
+    if (dirX != 0) {
+        dirY = 0;
+    }
+
+    if (gPlayer3Controller->buttonDown & L_JPAD) dirX = -64;
+    else if (gPlayer3Controller->buttonDown & R_JPAD) dirX = 64;
+    if (gPlayer3Controller->buttonDown & U_JPAD) dirY = 64;
+    else if (gPlayer3Controller->buttonDown & D_JPAD) dirY = -64;
+
+    if (stickTimer == 0 && curButtonMax > 0) {
+        sliderDir = dirX;
+
+        if (dirY > 0) {
+            if (selectedButtonID == 0) {
+                selectedButtonID = curButtonMax;
+            }
+            else {
+                selectedButtonID--;
+            }
+            stickTimer = 5;
+        }
+        else if (dirY < 0) {
+            if (selectedButtonID == curButtonMax) {
+                selectedButtonID = 0;
+            }
+            else {
+                selectedButtonID++;
+            }
+            stickTimer = 5;
+        }
+
+        if (stickTimer == 5)
+        {
+            play_sound(SOUND_ACTION_BRUSH_HAIR, gGlobalSoundSource);
+        }
+    }
+    else if (stickTimer > 0)
+    {
+        stickTimer--;
+    }
+}
+
+/**
+ * Handles all menu inputs
+ */
+void handle_input(void) {
+    if (gMarioState->gameAction != 1)
+        handle_stick_input();
+    if (clickTimer == 0 && gMarioState->gameAction != 1) {
+        handle_button_input();
+    }
+    else {
+        clickTimer++; // This is a very strange way to implement a timer? It counts up and
+                                // then resets to 0 instead of just counting down to 0.
+        if (clickTimer == 5) {
+            clickTimer = 0;
+            clickButtonID = 0;
+            clickMenuID = 0;
+        }
+    }
+    if (cancelTimer != 0) {
+        cancelTimer++; // This is a very strange way to implement a timer? It counts up and
+                                // then resets to 0 instead of just counting down to 0.
+        if (cancelTimer == 5) {
+            cancelTimer = 0;
+        }
+    }
+}
+
+/**
  * Render HUD strings using hudDisplayFlags with it's render functions,
  * excluding the cannon reticle which detects a camera preset for it.
  */
 void render_hud(void) {
     s16 hudDisplayFlags = gHudDisplay.flags;
+    handle_input();
 
-    if (hudDisplayFlags == HUD_DISPLAY_NONE) {
-        sPowerMeterHUD.animation = POWER_METER_HIDDEN;
-        sPowerMeterStoredHealth = 8;
-        sPowerMeterVisibleTimer = 0;
-#ifdef BREATH_METER
-        sBreathMeterHUD.animation = BREATH_METER_HIDDEN;
-        sBreathMeterStoredValue = 8;
-        sBreathMeterVisibleTimer = 0;
-#endif
-    } else {
-#ifdef VERSION_EU
-        // basically create_dl_ortho_matrix but guOrtho screen width is different
-        Mtx *mtx = alloc_display_list(sizeof(*mtx));
-
-        if (mtx == NULL) {
-            return;
-        }
-
-        create_dl_identity_matrix();
-        guOrtho(mtx, -16.0f, SCREEN_WIDTH + 16, 0, SCREEN_HEIGHT, -10.0f, 10.0f, 1.0f);
-        gSPPerspNormalize(gDisplayListHead++, 0xFFFF);
-        gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(mtx),
-                  G_MTX_PROJECTION | G_MTX_MUL | G_MTX_NOPUSH);
-#else
+    if (hudDisplayFlags != HUD_DISPLAY_NONE) {
+        int i = 0;
         create_dl_ortho_matrix();
-#endif
 
-        if (gCurrentArea != NULL && gCurrentArea->camera->mode == CAMERA_MODE_INSIDE_CANNON) {
-            render_hud_cannon_reticle();
+        if (lastAction != gMarioState->gameAction) {
+            highScore = save_file_get_high_score();
+            lastAction = gMarioState->gameAction;
         }
-
-// #ifndef DISABLE_LIVES
-//         if (hudDisplayFlags & HUD_DISPLAY_FLAG_LIVES) {
-//             render_hud_mario_lives();
-//         }
-// #endif
-
-        if (hudDisplayFlags & HUD_DISPLAY_FLAG_COIN_COUNT) {
-            render_hud_coins();
+        if (gMarioState->gameAction != 1) {
+            
         }
+        switch (gMarioState->gameAction) {
+            case 0:
+                {
+                    switch (menuID) {
+                        case 0: {
+                            curButtonMax = 1;
+                            if (highScore > 0) {
+                                char highScoreText[0x10];
+                                sprintf(highScoreText, "High Score: %d", highScore);
+                                draw_rounded_box_ws_center(640, 404, 1320, 96, 32, 34, 26, 113, 0xFF);
+                                mprint(640, 420, 64, -1, MPRINT_CJUST, 255, 255, 255, 255, highScoreText);
+                            }
+                            for (i = 0; i < 2; i++) {
+                                u8 a = 64;
+                                s32 selectOffset = 0;
+                                if (selectedButtonID == i) {
+                                    a += ((5 - stickTimer) * 191) / 5;
+                                    selectOffset = ((5 - stickTimer) * 16) / 5;
+                                }
+                                switch (i) {
+                                    case 0:
+                                        draw_rounded_box_ws_center(640 + selectOffset, 532, 448, 120, 32, 34, 26, 113, 0xFF);
+                                        mprint(640 + selectOffset, 548, 80, -1, MPRINT_CJUST, 255, 255, 255, a, "Play");
+                                        break;
+                                    case 1:
+                                        draw_rounded_box_ws_center(640 + selectOffset, 692, 448, 120, 32, 34, 26, 113, 0xFF);
+                                        mprint(640 + selectOffset, 708, 80, -1, MPRINT_CJUST, 255, 255, 255, a, "Credits");
+                                        break;
+                                }
+                            }
+                            mprint(1248, 908, 40, -1, MPRINT_RJUST, 255, 255, 255, 255, "axollyon 2022");
+                            if (clickTimer == 2) {
+                                switch (selectedButtonID) {
+                                    case 0:
+                                        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
+                                        gMarioState->startRun = TRUE;
+                                        break;
+                                    case 1:
+                                        play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
+                                        menuID = 1;
+                                        break;
+                                }
+                            }
+                            break;
+                        }
+                        case 1: {
+                            curButtonMax = 0;
+                            draw_rounded_box_ws_center(640, 0, 1320, 960, 32, 34, 26, 113, 0xFF);
+                            mprint(640, 32, 80, -1, MPRINT_CJUST, 255, 255, 255, 255, "Bullet Bill Simulator\nby axollyon");
+                            mprint(640, 220, 48, -1, MPRINT_CJUST, 255, 255, 255, 255, "Tools: HackerSM64, Fast64, STRM64, msprite");
+                            mprint(640, 300, 48, -1, MPRINT_CJUST, 255, 255, 255, 255, "Music:\nMain Menu (Ver. 1) from NSMB Wii\nNSMB Overworld Theme (2020 Remix) by Mutty99");
+                            mprint(640, 470, 48, -1, MPRINT_CJUST, 255, 255, 255, 255, "Models:\nBullet Bill from Mario Kart Arcade GP 2");
+                            mprint(640, 595, 48, -1, MPRINT_CJUST, 255, 255, 255, 255, "Textures:\nSMB1 Ground Texture by cloud6625\nSMG2 HD Grass Texture by razius\nHard Block Texture from NSMBU");
+                            mprint(640, 810, 48, -1, MPRINT_CJUST, 255, 255, 255, 255, "Code Help: Wiseguy, strat\nPlaytesters: anonymous_moose, SpK");
+                            if (clickTimer == 2 || cancelTimer == 2) {
+                                play_sound(SOUND_MENU_CLICK_CHANGE_VIEW, gGlobalSoundSource);
+                                menuID = 0;
+                            }
+                            break;
+                        }
+                    }
+                }
+                break;
+            case 1:
+                {
+                    char coins[0x10];
+                    clickTimer = 0;
+                    cancelTimer = 0;
+                    sprintf(coins, "$x%d", gMarioState->numCoins);
+                    draw_rounded_box_ws_center(0, 20, 880, 80, 32, 34, 26, 113, 0xFF);
+                    mprint(220, 36, 50, -1, MPRINT_CJUST, 255, 255, 255, 255, coins);
+                    draw_rounded_box_ws_center(1280, 20, 880, 80, 32, 34, 26, 113, 0xFF);
+                    if (gMarioState->numCoins < 50)
+                        mprint(1060, 36, 50, -1, MPRINT_CJUST, 255, 255, 255, 255, "No Stars");
+                    else if (gMarioState->numCoins < 100)
+                        mprint(1060, 36, 50, -1, MPRINT_CJUST, 255, 255, 255, 255, "Bronze `");
+                    else if (gMarioState->numCoins < 250)
+                        mprint(1060, 36, 50, -1, MPRINT_CJUST, 255, 255, 255, 255, "Silver ``");
+                    else if (gMarioState->numCoins < 500)
+                        mprint(1060, 36, 50, -1, MPRINT_CJUST, 255, 255, 255, 255, "Gold ```");
+                    else
+                        mprint(1060, 36, 50, -1, MPRINT_CJUST, 255, 255, 255, 255, "Platinum ````");
+                }
+                break;
+            case 2:
+                {
+                    char scoreText[0x30];
+                    char rank[0x10];
+                    curButtonMax = 1;
 
-        // if (hudDisplayFlags & HUD_DISPLAY_FLAG_STAR_COUNT) {
-        //     render_hud_stars();
-        // }
+                    if (gMarioState->numCoins < 50) 
+                        sprintf(rank, "%s", "No Stars");
+                    else if (gMarioState->numCoins < 100)
+                        sprintf(rank, "%s", "Bronze `");
+                    else if (gMarioState->numCoins < 250)
+                        sprintf(rank, "%s", "Silver ``");
+                    else if (gMarioState->numCoins < 500)
+                        sprintf(rank, "%s", "Gold ```");
+                    else
+                        sprintf(rank, "%s", "Platinum ````");
 
-        // if (hudDisplayFlags & HUD_DISPLAY_FLAG_KEYS) {
-        //     render_hud_keys();
-        // }
-
-// #ifdef BREATH_METER
-//         if (hudDisplayFlags & HUD_DISPLAY_FLAG_BREATH_METER) render_hud_breath_meter();
-// #endif
-
-//         if (hudDisplayFlags & HUD_DISPLAY_FLAG_CAMERA_AND_POWER) {
-//             render_hud_power_meter();
-// #ifdef PUPPYCAM
-//             if (!gPuppyCam.enabled) {
-// #endif
-//             render_hud_camera_status();
-// #ifdef PUPPYCAM
-//             }
-// #endif
-//         }
-
-        // if (hudDisplayFlags & HUD_DISPLAY_FLAG_TIMER) {
-        //     render_hud_timer();
-        // }
+                    if (gMarioState->newHigh == TRUE) {
+                        sprintf(scoreText, "%s\nScore: %d\nNew High Score!", rank, gMarioState->numCoins);
+                    }
+                    else {
+                        sprintf(scoreText, "%s\nScore: %d\nHigh Score: %d", rank, gMarioState->numCoins, highScore);
+                    }
+                    draw_rounded_box_ws_center(640, 152, 1320, 224, 32, 34, 26, 113, 0xFF);
+                    mprint(640, 168, 64, -1, MPRINT_CJUST, 255, 255, 255, 255, scoreText);
+                    for (i = 0; i < 2; i++) {
+                        u8 a = 64;
+                        s32 selectOffset = 0;
+                        if (selectedButtonID == i) {
+                            a += ((5 - stickTimer) * 191) / 5;
+                            selectOffset = ((5 - stickTimer) * 16) / 5;
+                        }
+                        switch (i) {
+                            case 0:
+                                draw_rounded_box_ws_center(640 + selectOffset, 532, 448, 120, 32, 34, 26, 113, 0xFF);
+                                mprint(640 + selectOffset, 548, 80, -1, MPRINT_CJUST, 255, 255, 255, a, "Restart");
+                                break;
+                            case 1:
+                                draw_rounded_box_ws_center(640 + selectOffset, 692, 448, 120, 32, 34, 26, 113, 0xFF);
+                                mprint(640 + selectOffset, 708, 80, -1, MPRINT_CJUST, 255, 255, 255, a, "To Menu");
+                                break;
+                        }
+                    }
+                    if (clickTimer == 2) {
+                        switch (selectedButtonID) {
+                            case 0:
+                                play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
+                                gMarioState->startRun = TRUE;
+                                break;
+                            case 1:
+                                play_sound(SOUND_MENU_CLICK_FILE_SELECT, gGlobalSoundSource);
+                                gMarioState->gameAction = 0;
+                                break;
+                        }
+                    }
+                }
+                break;
+        }
 
         if (gSurfacePoolError & NOT_ENOUGH_ROOM_FOR_SURFACES) print_text(10, 40, "SURFACE POOL FULL");
         if (gSurfacePoolError & NOT_ENOUGH_ROOM_FOR_NODES) print_text(10, 60, "SURFACE NODE POOL FULL");

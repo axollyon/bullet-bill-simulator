@@ -33,7 +33,7 @@ s16 sCoinArrowPositions[][2] = {
 };
 
 s32 bhv_coin_sparkles_init(void) {
-    if (obj_attack_collided_from_other_object(o)) {
+    if (obj_attack_collided_from_other_object(o) && (gMarioState->gameAction == 1)) {
         gMarioState->numCoins += o->oDamageOrCoinValue;
         spawn_object(o, MODEL_SPARKLES, bhvCoinSparklesSpawner);
         obj_mark_for_deletion(o);

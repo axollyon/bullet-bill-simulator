@@ -75,4 +75,6 @@ extern Gfx dl_billboard_num_E[];
 extern Gfx dl_billboard_num_F[];
 #endif
 
+extern const u8 texture_rounded_box[];
+
 #endif // SEGMENT2_H

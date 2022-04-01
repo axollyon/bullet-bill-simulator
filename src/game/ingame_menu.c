@@ -2206,3 +2206,77 @@ s32 render_menus_and_dialogs(void) {
 
     return mode;
 }
+
+void create_dl_ortho_matrix_4x(void) {
+    Mtx *matrix = (Mtx *) alloc_display_list(sizeof(Mtx));
+
+    if (matrix == NULL) {
+        return;
+    }
+
+    create_dl_identity_matrix();
+
+    guOrtho(matrix, 0.0f, SCREEN_WIDTH * 4, SCREEN_HEIGHT * 4, 0.0f, -10.0f, 10.0f, 1.0f);
+
+    // Should produce G_RDPHALF_1 in Fast3D
+    gSPPerspNormalize(gDisplayListHead++, 0xFFFF);
+
+    gSPMatrix(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(matrix), G_MTX_PROJECTION | G_MTX_MUL | G_MTX_NOPUSH)
+}
+
+void draw_rounded_box(s32 x, s32 y, u32 w, u32 h, u32 s, u8 r, u8 g, u8 b, u8 a) {
+    u32 corner_w = gConfig.widescreen ? (u32)(s * 0.75f) : s;
+    u32 corner_h = s;
+    w = w > corner_w * 2 ? w : corner_w * 2;
+    h = h > corner_h * 2 ? h : corner_h * 2;
+    create_dl_ortho_matrix_4x();
+    Vtx *verts = alloc_display_list(16 * sizeof(*verts));
+    if (verts != NULL) {
+        make_vertex(verts, /*n*/ 0,  /*x*/ x,                /*y*/ y,                /*z*/ -1, /*tx*/ 0,    /*ty*/ 1024, /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 1,  /*x*/ x + corner_w,     /*y*/ y,                /*z*/ -1, /*tx*/ 1024, /*ty*/ 1024, /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 2,  /*x*/ x + w - corner_w, /*y*/ y,                /*z*/ -1, /*tx*/ 1024, /*ty*/ 1024, /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 3,  /*x*/ x + w,            /*y*/ y,                /*z*/ -1, /*tx*/ 0,    /*ty*/ 1024, /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 4,  /*x*/ x,                /*y*/ y + corner_h,     /*z*/ -1, /*tx*/ 0,    /*ty*/ 0,    /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 5,  /*x*/ x + corner_w,     /*y*/ y + corner_h,     /*z*/ -1, /*tx*/ 1024, /*ty*/ 0,    /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 6,  /*x*/ x + w - corner_w, /*y*/ y + corner_h,     /*z*/ -1, /*tx*/ 1024, /*ty*/ 0,    /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 7,  /*x*/ x + w,            /*y*/ y + corner_h,     /*z*/ -1, /*tx*/ 0,    /*ty*/ 0,    /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 8,  /*x*/ x,                /*y*/ y + h - corner_h, /*z*/ -1, /*tx*/ 0,    /*ty*/ 0,    /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 9,  /*x*/ x + corner_w,     /*y*/ y + h - corner_h, /*z*/ -1, /*tx*/ 1024, /*ty*/ 0,    /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 10, /*x*/ x + w - corner_w, /*y*/ y + h - corner_h, /*z*/ -1, /*tx*/ 1024, /*ty*/ 0,    /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 11, /*x*/ x + w,            /*y*/ y + h - corner_h, /*z*/ -1, /*tx*/ 0,    /*ty*/ 0,    /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 12, /*x*/ x,                /*y*/ y + h,            /*z*/ -1, /*tx*/ 0,    /*ty*/ 1024, /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 13, /*x*/ x + corner_w,     /*y*/ y + h,            /*z*/ -1, /*tx*/ 1024, /*ty*/ 1024, /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 14, /*x*/ x + w - corner_w, /*y*/ y + h,            /*z*/ -1, /*tx*/ 1024, /*ty*/ 1024, /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+        make_vertex(verts, /*n*/ 15, /*x*/ x + w,            /*y*/ y + h,            /*z*/ -1, /*tx*/ 0,    /*ty*/ 1024, /*r*/ 255, /*g*/ 255, /*b*/ 255, /*a*/ 255);
+	    gDPPipeSync(gDisplayListHead++);
+	    gDPSetCombineLERP(gDisplayListHead++, 0, 0, 0, ENVIRONMENT, ENVIRONMENT, 0, TEXEL0, 0, 0, 0, 0, ENVIRONMENT, ENVIRONMENT, 0, TEXEL0, 0);
+        gDPSetRenderMode(gDisplayListHead++, G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
+	    gSPTexture(gDisplayListHead++, 65535, 65535, 0, 0, 1);
+	    gDPTileSync(gDisplayListHead++);
+	    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_I, G_IM_SIZ_16b, 1, texture_rounded_box);
+	    gDPSetTile(gDisplayListHead++, G_IM_FMT_I, G_IM_SIZ_16b, 0, 0, 7, 0, G_TX_CLAMP | G_TX_NOMIRROR, 5, 0, G_TX_CLAMP | G_TX_NOMIRROR, 5, 0);
+	    gDPLoadSync(gDisplayListHead++);
+	    gDPLoadBlock(gDisplayListHead++, 7, 0, 0, 255, 1024);
+	    gDPPipeSync(gDisplayListHead++);
+	    gDPSetTile(gDisplayListHead++, G_IM_FMT_I, G_IM_SIZ_4b, 2, 0, 0, 0, G_TX_CLAMP | G_TX_NOMIRROR, 5, 0, G_TX_CLAMP | G_TX_NOMIRROR, 5, 0);
+	    gDPSetTileSize(gDisplayListHead++, 0, 0, 0, 124, 124);
+	    gDPSetEnvColor(gDisplayListHead++, r, g, b, a);
+        gSPVertex(gDisplayListHead++, VIRTUAL_TO_PHYSICAL(verts), 16, 0);
+        gSP2Triangles(gDisplayListHead++, 1, 0, 4, 0x0, 1, 4, 5, 0x0);
+        gSP2Triangles(gDisplayListHead++, 2, 1, 5, 0x0, 2, 5, 6, 0x0);
+        gSP2Triangles(gDisplayListHead++, 3, 2, 6, 0x0, 3, 6, 7, 0x0);
+        gSP2Triangles(gDisplayListHead++, 5, 4, 8, 0x0, 5, 8, 9, 0x0);
+        gSP2Triangles(gDisplayListHead++, 6, 5, 9, 0x0, 6, 9, 10, 0x0);
+        gSP2Triangles(gDisplayListHead++, 7, 6, 10, 0x0, 7, 10, 11, 0x0);
+        gSP2Triangles(gDisplayListHead++, 9, 8, 12, 0x0, 9, 12, 13, 0x0);
+        gSP2Triangles(gDisplayListHead++, 10, 9, 13, 0x0, 10, 13, 14, 0x0);
+        gSP2Triangles(gDisplayListHead++, 11, 10, 14, 0x0, 11, 14, 15, 0x0);
+    }
+    gDPSetTexturePersp(gDisplayListHead++, G_TP_PERSP);
+}
+
+void draw_rounded_box_ws_center(s32 x, s32 y, u32 w, u32 h, u32 s, u8 r, u8 g, u8 b, u8 a) {
+    u32 real_w = gConfig.widescreen ? (u32)(w * 0.75f) : w;
+    s32 real_x = x - (real_w / 2);
+    draw_rounded_box(real_x, y, real_w, h, s, r, g, b, a);
+}
