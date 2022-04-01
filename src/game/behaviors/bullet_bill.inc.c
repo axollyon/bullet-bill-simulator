@@ -191,6 +191,7 @@ void bhv_bullet_bill_loop(void) {
                 gMarioState->numCoins = 0;
             }
             o->o110 = TRUE;
+            spawn_mist_particles();
         }
     }
     else if (gMarioState->gameAction == 1) {
@@ -290,6 +291,7 @@ void bhv_bullet_bill_loop(void) {
             play_music(SEQ_PLAYER_LEVEL, SEQ_CUSTOM_NEW_SOUP, 0);
             gMarioState->resetAll = TRUE;
             gMarioState->numCoins = 0;
+            spawn_mist_particles();
         }
     }
 }
