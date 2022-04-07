@@ -200,8 +200,18 @@ void bhv_bullet_bill_loop(void) {
         gMarioState->newHigh = FALSE;
 
         if (gMarioState->resetAll == TRUE) {
-            o->oFloatFC -= 12.861 * 0.4F * 32;
-            o->oFloat100 -= 12.861 * 0.4F * -32;
+            f32 oldSpeedMod = 15.0f;
+            f32 oldSpeed = 12.5f;
+            f32 offsetPx;
+            if (gMarioState->numCoins < 50)
+                oldSpeedMod = gMarioState->numCoins * 0.1f;
+            else if (gMarioState->numCoins < 250)
+                oldSpeedMod = 5.0f + (gMarioState->numCoins - 50) * 0.05f;
+            oldSpeed = oldSpeed + oldSpeedMod;
+            offsetPx = (463.0f / 450.0f) * oldSpeed;
+            o->oFloatFC -= offsetPx * 0.4F * 32;
+            o->oFloat100 -= offsetPx * 0.4F * -32;
+            gMarioState->numCoins = 0;
         }
 
         if (o->oTimer >= 70) {
@@ -213,7 +223,7 @@ void bhv_bullet_bill_loop(void) {
             gMarioState->gameSpeed = 12.5f + speedMod;
         }
         else {
-            gMarioState->gameSpeed = 70.0f;
+            gMarioState->gameSpeed = 12.5f + (100.0f * (1.0f - (o->oTimer / 70.0f)));
         }
 
         if (gMarioState->gameSpeed != o->oFloat10C) {
@@ -293,7 +303,6 @@ void bhv_bullet_bill_loop(void) {
             stop_background_music(SEQ_CUSTOM_MENU_SOUP);
             play_music(SEQ_PLAYER_LEVEL, SEQ_CUSTOM_NEW_SOUP, 0);
             gMarioState->resetAll = TRUE;
-            gMarioState->numCoins = 0;
             spawn_mist_particles();
         }
     }
